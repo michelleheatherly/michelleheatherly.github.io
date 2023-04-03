@@ -1,0 +1,2 @@
+/*! For license information please see src_assets_fonts_Play_css.bundle.js.LICENSE.txt */
+"use strict";(self.webpackChunkmichelle_updated_website=self.webpackChunkmichelle_updated_website||[]).push([["src_assets_fonts_Play_css"],{"./src/assets/fonts/Play.css":(s,e,t)=>{t.r(e)}}]);
