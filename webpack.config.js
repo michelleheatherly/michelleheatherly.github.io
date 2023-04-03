@@ -30,7 +30,6 @@ const miniCss = new MiniCssExtractPlugin({
 const copyPlugin = new CopyPlugin({
     patterns: [
         { from: './src/assets/images', to: 'images' },
-        { from: './src/assets/videos', to: 'videos' },
         { from: './src/favicon.ico' },
     ],
 });
@@ -88,10 +87,6 @@ module.exports = {
                         publicPath: '/dist',
                     },
                 },
-            },
-            {
-                test: /\.mp4$/,
-                use: "file-loader?name=videos/[name].[ext]",
             },
             {
                 test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
