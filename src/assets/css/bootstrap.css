@@ -4497,6 +4497,8 @@ input[type="button"].btn-block {
   display: block;
 }
 
+
+/* Blur glass effect from https://css.glass */
 .navbar {
   position: relative;
   display: flex;

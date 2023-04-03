@@ -15,6 +15,8 @@ import 'jquery-parallax.js/parallax';
 // Custom Javascript
 import { animateEffect } from './animate-effect';
 import { scroll } from "./scroll";
+import { polarChart } from './polar-chart';
+import { donutChart } from "./donut-chart";
 
 // update the current year
 const updateYear = () => {
@@ -68,3 +70,5 @@ window.addEventListener("DOMContentLoaded", () => {
 
 scroll();
 animateEffect();
+polarChart();
+donutChart();
