@@ -8,6 +8,10 @@
 
 /*! ./assets/fonts/Play.css */
 
+/*! ./donut-chart */
+
+/*! ./polar-chart */
+
 /*! ./scroll */
 
 /*! @fortawesome/fontawesome-free/css/all.min.css */
@@ -15,6 +19,8 @@
 /*! animate.css/animate.min.css */
 
 /*! bootstrap */
+
+/*! chart.js/auto */
 
 /*! import() */
 
@@ -29,6 +35,14 @@
 /*!***********************!*\
   !*** ./src/scroll.js ***!
   \***********************/
+
+/*!****************************!*\
+  !*** ./src/donut-chart.js ***!
+  \****************************/
+
+/*!****************************!*\
+  !*** ./src/polar-chart.js ***!
+  \****************************/
 
 /*!*******************************!*\
   !*** ./src/animate-effect.js ***!
