@@ -1,0 +1,35 @@
+/*! ./animate-effect */
+
+/*! ./assets/css/bootstrap.css */
+
+/*! ./assets/css/custom.css */
+
+/*! ./assets/css/custom.scss */
+
+/*! ./assets/fonts/Play.css */
+
+/*! ./scroll */
+
+/*! @fortawesome/fontawesome-free/css/all.min.css */
+
+/*! animate.css/animate.min.css */
+
+/*! bootstrap */
+
+/*! import() */
+
+/*! jquery */
+
+/*! jquery-parallax.js/parallax */
+
+/*!**********************!*\
+  !*** ./src/index.js ***!
+  \**********************/
+
+/*!***********************!*\
+  !*** ./src/scroll.js ***!
+  \***********************/
+
+/*!*******************************!*\
+  !*** ./src/animate-effect.js ***!
+  \*******************************/
