@@ -1,0 +1,2 @@
+/*! For license information please see src_assets_css_custom_css.bundle.js.LICENSE.txt */
+"use strict";(self.webpackChunkmichelle_updated_website=self.webpackChunkmichelle_updated_website||[]).push([["src_assets_css_custom_css"],{"./src/assets/css/custom.css":(s,e,c)=>{c.r(e)}}]);
