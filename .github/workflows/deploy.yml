@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   build-and-deploy:
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
@@ -36,11 +37,12 @@ jobs:
         run: ls -l ./dist
 
       - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: JamesIves/github-pages-deploy-action@v4
         if: github.ref == 'refs/heads/main'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: dist
+          branch: gh-pages
 
       - name: Clean up
         run: rm -rf ./dist/*
