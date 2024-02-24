@@ -16,22 +16,22 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: "20"
+      # - name: Setup Node
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: "20"
 
-      - name: Create dist directory
-        run: mkdir dist
+      # - name: Create dist directory
+      #   run: mkdir dist
 
-      - name: Install Dependencies
-        run: npm ci
+      # - name: Install Dependencies
+      #   run: npm ci
 
-      - name: Build Project
-        run: npm run build
+      # - name: Build Project
+      #   run: npm run build
 
-      - name: Copy CNAME file
-        run: echo "michelle-heatherly.com" > ./dist/CNAME
+      # - name: Copy CNAME file
+      #   run: echo "michelle-heatherly.com" > ./dist/CNAME
 
       - name: List dist directory contents
         run: ls -l ./dist
@@ -44,5 +44,5 @@ jobs:
           folder: dist
           branch: gh-pages
 
-      - name: Clean up
-        run: rm -rf ./dist/*
+      # - name: Clean up
+      #   run: rm -rf ./dist/*
