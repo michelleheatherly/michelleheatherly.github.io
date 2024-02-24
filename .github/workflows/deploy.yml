@@ -32,14 +32,15 @@ jobs:
       - name: Copy CNAME file
         run: echo "michelle-heatherly.com" > ./dist/CNAME
 
+      - name: List dist directory contents
+        run: ls -l ./dist
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          publish_branch: gh-pages
-          publish_dir_prefix: ""
 
       - name: Clean up
         run: rm -rf ./dist/*
