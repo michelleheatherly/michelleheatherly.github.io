@@ -5,20 +5,26 @@ on:
       - main
 permissions:
   contents: write
+  pages: write
+  id-token: write
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   build-and-deploy:
-    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 🛎️
+      - name: Checkout main branch
         uses: actions/checkout@v3
 
-      - name: Install and Build 🔧
-        run: |
-          npm ci
-          npm run build
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Install Dependencies
+        run: npm install
+      
+      - name: Build Project
+        run: npm run build
+      
+      = name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: dist
+          personal_token: ${{ secrets.token }}
+          publish_branch: gh-pages
+          publish_dir: ./dist
