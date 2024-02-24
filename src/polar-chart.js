@@ -18,11 +18,12 @@ const polarChart = () => {
                 'Microsoft SQL',
                 'Oracle',
                 'MySQL',
-                'MariaDB'
+                'MariaDB',
+                'Postgres'
             ],
             datasets: [{
                 label: 'Databases',
-                data: [100, 100, 90, 50, 15, 70, 50],
+                data: [100, 100, 90, 50, 15, 70, 50, 60],
                 backgroundColor: [
                     'rgba(129, 28, 225, 0.8)',
                     'rgba(24, 34, 226, 0.8)',
@@ -30,7 +31,8 @@ const polarChart = () => {
                     'rgba(207, 24, 226, 0.8)',
                     'rgba(24, 226, 114, 0.8)',
                     'rgba(226, 211, 24, 0.8)',
-                    'rgba(24, 70, 114, 0.8)'
+                    'rgba(24, 70, 114, 0.8)',
+                    'rgba(224, 61, 26, 0.8)'
                 ]
             }]
         };

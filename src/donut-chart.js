@@ -18,11 +18,12 @@ const donutChart = () => {
                 'CentOS',
                 'RHEL',
                 'AWS',
-                'Azure'
+                'Azure',
+                'MacOS'
             ],
             datasets: [{
                 label: 'Operating Systems',
-                data: [80, 100, 70, 60, 50, 30, 20],
+                data: [80, 100, 70, 60, 50, 30, 20, 50],
                 backgroundColor: [
                     'rgba(129, 28, 225, 0.8)',
                     'rgba(24, 34, 226, 0.8)',
@@ -30,7 +31,9 @@ const donutChart = () => {
                     'rgba(255, 231, 71, 0.8)',
                     'rgba(24, 226, 114, 0.8)',
                     'rgba(238, 130, 238, 0.8)',
-                    'rgba(255, 165, 0, 0.8)'
+                    'rgba(255, 165, 0, 0.8)',
+                    'rgba(224, 61, 26, 0.8)'
+
                 ],
                 hoverOffset: 4
             }]
