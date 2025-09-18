@@ -15,7 +15,7 @@
     "clean:dist": "rimraf dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "michelle heatherly",
+  "author": "Michelle Heatherly",
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
