@@ -51,7 +51,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.m?js$/,
+                test: /\.m?js$/i,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader",
@@ -61,24 +61,25 @@ module.exports = {
                 },
             },
             {
-                test: /\.(sa|sc|c)ss$/,
+                test: /\.css$/i,
                 use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            publicPath: (resourcePath, context) => {
-                                return path.relative(path.dirname(resourcePath), context) + "/";
-                            },
-                        },
-                    },
-                    { loader: "css-loader" },
-                    { loader: "postcss-loader" },
-                    { loader: "resolve-url-loader" },
-                    { loader: "sass-loader", options: { sourceMap: true } },
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "postcss-loader"
                 ],
             },
             {
-                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
+                test: /\.s[ac]ss$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    "css-loader",
+                    "postcss-loader",
+                    "resolve-url-loader",
+                    "sass-loader",
+                ],
+            },
+            {
+                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/i,
                 use: {
                     loader: 'file-loader',
                     options: {
@@ -89,12 +90,11 @@ module.exports = {
                 },
             },
             {
-                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: "file-loader",
-            },
-            {
-                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                type: 'asset/inline'
+                test: /\.(woff(2)?|eot|ttf|otf|svg)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[name][ext][query]'
+                }
             },
             {
                 test: /\.html$/i,

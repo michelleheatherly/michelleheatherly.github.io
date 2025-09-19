@@ -5,7 +5,7 @@ import(/* webpackPrefetch: true */ './assets/fonts/Play.css');
 import(/* webpackPrefetch: true */ './assets/css/custom.scss');
 import(/* webpackPrefetch: true */ './assets/css/custom.css');
 import(/* webpackPrefetch: true */ './assets/css/bootstrap.css');
-import 'animate.css/animate.min.css';
+import 'animate.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 // Javascript
