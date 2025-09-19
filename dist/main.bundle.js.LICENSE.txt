@@ -16,7 +16,7 @@
 
 /*! @fortawesome/fontawesome-free/css/all.min.css */
 
-/*! animate.css/animate.min.css */
+/*! animate.css */
 
 /*! bootstrap */
 
