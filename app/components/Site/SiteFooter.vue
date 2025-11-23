@@ -64,20 +64,19 @@
           </div>
         </section>
 
-       <section
-          class="relative z-10 grid gap-6 items-start lg:grid-cols-[auto_minmax(0,1fr)] 
-                lg:gap-8 lg:pl-4 xl:pl-8"
+        <section
+          class="relative z-10 grid gap-6 items-start lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8 lg:pl-4 xl:pl-8"
         >
-           <NuxtImg 
-              src="/celestial-kitty.png"
-              width="400"
-              height="400"
-              alt="Celestial kitty illustration"
-              class="h-40 w-auto object-contain sm:h-48 lg:h-56 self-start floaty-kitty"
-              format="webp"
-              loading="lazy"
-              decoding="async"
-            />
+          <NuxtImg 
+            src="/celestial-kitty.png"
+            width="400"
+            height="400"
+            alt="Celestial kitty illustration"
+            class="h-40 w-auto object-contain sm:h-48 lg:h-56 self-start floaty-kitty"
+            format="webp"
+            loading="lazy"
+            decoding="async"
+          />
 
           <div class="grid gap-8 w-full max-w-xs lg:max-w-sm">
             <div
@@ -108,7 +107,7 @@
                         >
                           <span
                             class="pointer-events-none absolute -bottom-1 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-black opacity-0 transition-all duration-300 ease-out dark:bg-white/90
-                                  group-hover:scale-x-100 group-hover:opacity-100 group-focus-visible:scale-x-100 group-focus-visible:opacity-100"
+                                   group-hover:scale-x-100 group-hover:opacity-100 group-focus-visible:scale-x-100 group-focus-visible:opacity-100"
                           />
                           <span class="relative">
                             {{ item.label }}
@@ -160,10 +159,14 @@
 <script setup lang="ts">
 import { useIntersectionObserver } from '@vueuse/core'
 
+const { t } = useI18n()
+
 const footerRef = ref<HTMLElement | null>(null)
 const footerVisible = useState<boolean>('footer-visible', () => false)
-const FOOTER_VISIBILITY_RATIO = 0.6
 const currentYear = new Date().getFullYear()
+
+const FOOTER_VISIBILITY_RATIO = 0.6
+const FOOTER_THRESHOLDS = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
 const navItemsMeta = [
   { key: 'home', href: '#home' },
@@ -173,10 +176,7 @@ const navItemsMeta = [
   { key: 'projects', href: '#projects' },
   { key: 'blog', href: '#blog' },
   { key: 'contact', href: '#contact' }
-
 ] as const
-
-const { t } = useI18n()
 
 const siteName = computed(() => t('footer.siteName'))
 const siteDescription = computed(() => t('footer.description'))
@@ -211,13 +211,12 @@ if (import.meta.client) {
       footerVisible.value = entry.isIntersecting && ratio >= FOOTER_VISIBILITY_RATIO
     },
     {
-      threshold: Array.from({ length: 11 }, (_, index) => index / 10),
+      threshold: FOOTER_THRESHOLDS,
       rootMargin: '0px 0px -40px 0px'
     }
   )
 }
 </script>
-
 
 <style scoped>
 .animate-ping-slow {
@@ -245,12 +244,10 @@ if (import.meta.client) {
   will-change: transform;
   position: relative;
 
-  /* Soft, diffused glow */
   filter:
-    drop-shadow(0 0 10px rgba(155, 92, 255, 0.25))  /* cyber-purple */
-    drop-shadow(0 0 18px rgba(23, 157, 104, 0.18))  /* cyber-green */
+    drop-shadow(0 0 10px rgba(155, 92, 255, 0.25))
+    drop-shadow(0 0 18px rgba(23, 157, 104, 0.18))
     drop-shadow(0 0 30px rgba(155, 92, 255, 0.15));
-
   transition:
     transform 300ms ease,
     filter 300ms ease;
@@ -274,8 +271,8 @@ if (import.meta.client) {
 
   background: radial-gradient(
     circle,
-    rgba(155, 92, 255, 0.15) 0%,   /* cyber-purple */
-    rgba(23, 157, 104, 0.08) 40%,  /* cyber-green */
+    rgba(155, 92, 255, 0.15) 0%,
+    rgba(23, 157, 104, 0.08) 40%,
     transparent 75%
   );
 
@@ -307,7 +304,6 @@ if (import.meta.client) {
   }
 }
 
-/* Reduced motion accessibility */
 @media (prefers-reduced-motion: reduce) {
   .floaty-kitty {
     animation: none;

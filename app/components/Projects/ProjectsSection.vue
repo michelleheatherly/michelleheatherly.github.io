@@ -12,7 +12,7 @@
             <span
               class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs uppercase tracking-[0.28em]"
             >
-              <UIcon name="i-heroicons-beaker-20-solid" class="h-4 w-4" />
+              <UIcon :name="IconBeaker" class="h-4 w-4" />
               {{ t('projects.badge') }}
             </span>
 
@@ -39,7 +39,7 @@
               class="justify-center group border transition-colors duration-300 bg-transparent"
             >
               <UIcon
-                name="i-heroicons-arrow-down-tray-20-solid"
+                :name="IconArrowDownTray"
                 class="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-12"
               />
               <span>{{ t('projects.resume') }}</span>
@@ -89,7 +89,7 @@
                         dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-300 dark:hover:text-cyber-purple"
                 >
                   <UIcon
-                    name="i-heroicons-tag-20-solid"
+                    :name="IconTag"
                     class="h-5 w-5 text-zinc-400 group-hover:text-cyber-purple"
                   />
 
@@ -105,7 +105,7 @@
                   </span>
 
                   <UIcon
-                    :name="tagMenuOpen ? 'i-heroicons-chevron-up-20-solid' : 'i-heroicons-chevron-down-20-solid'"
+                    :name="tagMenuOpen ? IconChevronUp : IconChevronDown"
                     class="h-4 w-4 text-zinc-400 transition-transform duration-300 group-hover:text-cyber-purple"
                   />
                 </UButton>
@@ -137,7 +137,7 @@
 
                     <label class="relative block">
                       <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-zinc-400 dark:text-zinc-500">
-                        <UIcon name="i-heroicons-magnifying-glass-20-solid" class="h-4 w-4" />
+                        <UIcon :name="IconMagnifyingGlass" class="h-4 w-4" />
                       </span>
                       <input
                         v-model="tagSearchQuery"
@@ -165,7 +165,7 @@
                       >
                         <span class="capitalize">{{ tag }}</span>
                         <UIcon
-                          :name="activeTags.includes(tag) ? 'i-heroicons-minus-circle-20-solid' : 'i-heroicons-plus-circle-20-solid'"
+                          :name="activeTags.includes(tag) ? IconMinusCircle : IconPlusCircle"
                           :class="[
                             'h-5 w-5 transition-transform duration-300',
                             activeTags.includes(tag)
@@ -185,7 +185,10 @@
                 class="ml-auto inline-flex items-center gap-2 rounded-full border border-transparent px-3.5 py-1.5 text-sm font-bold text-cyber-green transition-all duration-300 hover:-translate-y-0.5 hover:text-cyber-green hover:shadow-[0_16px_40px_-28px_rgba(59,130,246,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-green/40 cursor-pointer"
                 @click="clearFilters"
               >
-                <UIcon name="i-heroicons-arrow-path-20-solid" class="h-4 w-4 text-cyber-green dark:text-cyber-green" />
+                <UIcon
+                  :name="IconArrowPath"
+                  class="h-4 w-4 text-cyber-green dark:text-cyber-green"
+                />
                 {{ t('projects.filters.reset') }}
               </button>
             </div>
@@ -193,7 +196,7 @@
             <div class="w-full lg:w-72">
               <label class="relative block">
                 <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-zinc-400 dark:text-zinc-500">
-                  <UIcon name="i-heroicons-magnifying-glass-20-solid" class="h-5 w-5" />
+                  <UIcon :name="IconMagnifyingGlass" class="h-5 w-5" />
                 </span>
                 <input
                   v-model="searchQuery"
@@ -228,15 +231,14 @@
         :visibleOnce="motionVisible(projectDelays.grid)"
       >
         <div class="mx-auto max-w-md space-y-4 px-6">
-          <NuxtImg 
-            src="/sad-kitty.png"
-            width="250"
-            height="250"
-            alt="A sad kitty illustration"
-            class="mx-auto h-50 w-50 object-contain empty-state-kitty"
-            format="webp"
-            loading="lazy"
-          />
+           <img
+              src="/sad-kitty.png"
+              width="250"
+              height="250"
+              alt="A sad kitty illustration"
+              class="mx-auto h-50 w-50 object-contain empty-state-kitty"
+              loading="lazy"
+            />
           <p class="text-lg font-semibold text-zinc-900 dark:text-white">
             {{ t('projects.empty.title') }}
           </p>
@@ -244,7 +246,7 @@
             {{ t('projects.empty.description') }}
           </p>
           <UButton variant="solid" class="mt-2 cursor-pointer" @click="clearFilters">
-            <UIcon name="i-heroicons-sparkles-20-solid" class="h-5 w-5" />
+            <UIcon :name="IconSparkles" class="h-5 w-5" />
             <span>{{ t('projects.empty.action') }}</span>
           </UButton>
         </div>
@@ -254,6 +256,17 @@
 </template>
 
 <script setup lang="ts">
+import IconBeaker from '~icons/heroicons/beaker-20-solid'
+import IconArrowDownTray from '~icons/heroicons/arrow-down-tray-20-solid'
+import IconTag from '~icons/heroicons/tag-20-solid'
+import IconChevronUp from '~icons/heroicons/chevron-up-20-solid'
+import IconChevronDown from '~icons/heroicons/chevron-down-20-solid'
+import IconMagnifyingGlass from '~icons/heroicons/magnifying-glass-20-solid'
+import IconMinusCircle from '~icons/heroicons/minus-circle-20-solid'
+import IconPlusCircle from '~icons/heroicons/plus-circle-20-solid'
+import IconArrowPath from '~icons/heroicons/arrow-path-20-solid'
+import IconSparkles from '~icons/heroicons/sparkles-20-solid'
+
 const categoryFilterMeta = [
   { key: 'all', value: 'all' },
   { key: 'front-end', value: 'front-end' },

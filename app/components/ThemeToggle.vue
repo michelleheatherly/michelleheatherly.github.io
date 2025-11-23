@@ -12,8 +12,8 @@
       ]"
       @click="onClick"
     >
-      <UIcon
-        :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
+     <UIcon
+        :name="isDark ? IconSun : IconMoon"
         :class="[
           'h-5 w-5',
           'text-zinc-900 dark:text-zinc-100',
@@ -32,19 +32,23 @@
       @click="switchTheme"
     >
       <UIcon
-        :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
-        class="h-5 w-5 text-zinc-900 dark:text-zinc-100 transition-none duration-0"
-      />
+          :name="isDark ? IconSun : IconMoon"
+          class="h-5 w-5 text-zinc-900 dark:text-zinc-100 transition-none duration-0"
+        />
       </UButton>
     </template>
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
+import IconSun from '~icons/lucide/sun'
+import IconMoon from '~icons/lucide/moon'
+
 const colorMode = useColorMode()
 const { t } = useI18n()
 
-const nextTheme = computed(() => (colorMode.value === 'dark' ? 'light' : 'dark'))
+const isDark = computed(() => colorMode.value === 'dark')
+const nextTheme = computed(() => (isDark.value ? 'light' : 'dark'))
 const modeLabel = computed(() => t(`common.modes.${nextTheme.value}`))
 const ariaLabel = computed(() => t('theme.switch', { mode: modeLabel.value }))
 
