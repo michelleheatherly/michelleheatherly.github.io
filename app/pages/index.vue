@@ -1,13 +1,9 @@
-
 <template>
   <HeroSection />
-  <AboutSection />
-  <EducationSection />
-  <SkillsSection />
-  <ProjectsSection />
-  <BlogSection />
-  <ContactSection />
+  <LazyAboutSection />
+  <LazyEducationSection />
+  <LazySkillsSection />
+  <LazyProjectsSection />
+  <LazyBlogSection />
+  <LazyContactSection />
 </template>
-
-<script setup lang="ts">
-</script>

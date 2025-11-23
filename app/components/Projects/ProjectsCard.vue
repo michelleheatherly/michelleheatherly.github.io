@@ -3,21 +3,15 @@
     class="group relative h-full overflow-hidden rounded-2xl transition-all duration-300
            border border-black/10 dark:border-white/10
            bg-white/70 dark:bg-white/5 backdrop-blur-xl
+           hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(129,140,248,0.65)]
            hover:border-cyber-purple/30
            focus-within:ring-2 focus-within:ring-cyber-purple/40"
     :ui="{
       body: 'relative flex h-full flex-col p-0'
     }"
-    v-motion
-    :initial="{ opacity: 0, y: 24, scale: 0.98 }"
-    :enter="{ opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 120, damping: 18 } }"
-    :hovered="hoveredMotion"
-    :pressed="pressedMotion"
-    :visibleOnce="true"
     @pointermove="handlePointerMove"
     @pointerleave="resetSpotlight"
   >
-    <!-- Spotlight overlay -->
     <span
       class="pointer-events-none absolute inset-px rounded-2xl
              opacity-0 transition-opacity duration-500 group-hover:opacity-80"
@@ -29,7 +23,6 @@
              opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-soft-light"
     />
 
-    <!-- Image + category badge -->
     <div class="relative">
       <a
         :href="project.link"
@@ -38,14 +31,14 @@
         class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/50"
       >
         <NuxtImg
-              :src="projectImageSrc"
-              alt="Project image"
-              width="1030"
-              height="560"
-              class="h-44 w-full object-cover rounded-t-2xl transition-all duration-500 ease-out group-hover:scale-105"
-              format="webp"
-              loading="lazy"
-          />
+          :src="projectImageSrc"
+          :alt="project.title"
+          width="1030"
+          height="560"
+          class="h-44 w-full object-cover rounded-t-2xl transition-all duration-500 ease-out group-hover:scale-105"
+          format="webp"
+          loading="lazy"
+        />
       </a>
 
       <span
@@ -57,7 +50,6 @@
       </span>
     </div>
 
-    <!-- Content + actions (body is flex h-full because of :ui) -->
     <div class="flex flex-1 flex-col p-4 space-y-3">
       <h3 class="text-lg font-semibold text-zinc-900 dark:text-white transition-colors duration-300">
         {{ project.title }}
@@ -80,7 +72,6 @@
         </UBadge>
       </div>
 
-      <!-- Actions row pinned to the bottom of the card body -->
       <div class="pt-2 mt-auto flex items-center justify-between gap-2">
         <UButton
           color="success"
@@ -133,7 +124,6 @@ const props = defineProps<{
 const project = computed(() => props.project)
 const { t } = useI18n()
 
-// Only show code button when a real codeLink exists
 const projectCodeHref = computed(() => {
   const source = project.value.codeLink?.trim()
   return source && source.length > 0 ? source : ''
@@ -194,31 +184,6 @@ const spotlightBackground = computed(() => {
     rgba(139, 92, 246, 0.35),
     transparent 70%)`
 })
-
-const hoveredMotion = computed(() =>
-  prefersReduced.value === 'reduce'
-    ? undefined
-    : {
-        scale: 1.02,
-        y: -6,
-        transition: {
-          type: 'spring',
-          stiffness: 180,
-          damping: 18
-        }
-      }
-)
-
-const pressedMotion = computed(() =>
-  prefersReduced.value === 'reduce'
-    ? undefined
-    : {
-        scale: 0.99,
-        transition: {
-          duration: 0.15
-        }
-      }
-)
 
 const categoryStyleMap: Record<
   string,

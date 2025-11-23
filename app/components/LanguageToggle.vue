@@ -3,7 +3,7 @@
     color="neutral"
     variant="ghost"
     size="sm"
-    class="rounded-full font-semibold tracking-wide border border-transparent bg-transparent hover:border-neutral-500/70 focus-visible:border-neutral-500/70 hover:bg-transparent hover:cursor-pointer transition duration-300"
+    class="rounded-full font-semibold tracking-wide border border-transparent bg-transparent hover:border-neutral-500/70 focus-visible:border-neutral-500/70 hover:bg-transparent hover:cursor-pointer transition duration-300 text-zinc-900 dark:text-zinc-100"
     :aria-label="buttonLabel"
     @click="toggleLocale"
   >

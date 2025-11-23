@@ -7,6 +7,7 @@
       size="sm"
       :class="[
         'group/theme-toggle rounded-full border border-transparent bg-transparent hover:border-neutral-500/70 hover:bg-transparent hover:cursor-pointer',
+        'text-zinc-900 dark:text-zinc-100',
         quickMode ? 'transition-none duration-0' : 'transition duration-300'
       ]"
       @click="onClick"
@@ -15,6 +16,7 @@
         :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
         :class="[
           'h-5 w-5',
+          'text-zinc-900 dark:text-zinc-100',
           quickMode ? 'transition-none duration-0' : 'transition-transform duration-500 group-hover/theme-toggle:-translate-y-0.5 group-hover/theme-toggle:rotate-12'
         ]"
       />
@@ -26,13 +28,13 @@
         color="neutral"
         variant="ghost"
         size="sm"
-        class="group/theme-toggle rounded-full border border-transparent bg-transparent hover:border-neutral-500/70 hover:bg-transparent hover:cursor-pointer transition-none duration-0"
-        @click="switchTheme"
-      >
-        <UIcon
-          :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
-          class="h-5 w-5 transition-none duration-0"
-        />
+      class="group/theme-toggle rounded-full border border-transparent bg-transparent hover:border-neutral-500/70 hover:bg-transparent hover:cursor-pointer transition-none duration-0 text-zinc-900 dark:text-zinc-100"
+      @click="switchTheme"
+    >
+      <UIcon
+        :name="`i-lucide-${nextTheme === 'dark' ? 'sun' : 'moon'}`"
+        class="h-5 w-5 text-zinc-900 dark:text-zinc-100 transition-none duration-0"
+      />
       </UButton>
     </template>
   </ClientOnly>

@@ -1,39 +1,17 @@
 <template>
-    <section id="home" class="hero-section relative transition-colors duration-300">
+  <section id="home" class="hero-section relative transition-colors duration-300">
     <UContainer class="pt-16 pb-20 md:pt-20 md:pb-28 lg:py-36">
-      <div
-        class="grid lg:grid-cols-2 gap-10 items-center"
-        v-motion
-        :initial="{ opacity: 0, y: 24 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 0.9, ease: 'easeOut' } }"
-      >
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
         <div
           class="space-y-6"
           v-motion
-          :initial="{ opacity: 0, y: 18, blur: 8 }"
-          :enter="{
-            opacity: 1,
-            y: 0,
-            blur: 0,
-            transition: {
-              delay: 0.1,
-              type: 'spring',
-              stiffness: 70,
-              damping: 26
-            }
-          }"
+          :initial="motionInitial"
+          :enter="motionEnter(0.12)"
         >
           <span
             class="availability-pill group cursor-pointer inline-flex items-center rounded-full border px-4 py-1
                    text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300"
             :aria-label="t('hero.availability')"
-            v-motion
-            :initial="{ opacity: 0, y: -8 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              transition: { delay: heroDelays.badge, type: 'spring', stiffness: 150, damping: 18 }
-            }"
           >
             <UIcon
               name="i-heroicons-rocket-launch-20-solid"
@@ -47,19 +25,6 @@
           <h1
             class="hero-headline text-4xl md:text-6xl font-extrabold leading-tight
                    text-zinc-900 dark:text-white transition-colors duration-300"
-            v-motion
-            :initial="{ opacity: 0, y: 28, scale: 0.96 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              transition: {
-                delay: heroDelays.heading,
-                type: 'spring',
-                stiffness: 85,
-                damping: 26
-              }
-            }"
           >
             {{ t('hero.headline.start') }}
             <span class="hero-headline__accent">
@@ -70,39 +35,11 @@
 
           <p
             class="max-w-prose text-zinc-600 dark:text-white/70 transition-colors duration-300"
-            v-motion
-            :initial="{ opacity: 0, y: 24, blur: 10 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              blur: 0,
-              transition: {
-                delay: heroDelays.description,
-                type: 'spring',
-                stiffness: 80,
-                damping: 28
-              }
-            }"
           >
             {{ t('hero.description') }}
           </p>
 
-          <div
-            class="flex flex-wrap gap-3"
-            v-motion
-            :initial="{ opacity: 0, y: 20, scale: 0.95 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              transition: {
-                delay: heroDelays.ctas,
-                type: 'spring',
-                stiffness: 95,
-                damping: 28
-              }
-            }"
-          >
+          <div class="flex flex-wrap gap-3">
             <UButton size="lg" to="#projects" class="group">
               <UIcon
                 name="i-heroicons-bolt-20-solid"
@@ -125,21 +62,7 @@
             </UButton>
           </div>
 
-          <div
-            v-motion
-            :initial="{ opacity: 0, y: 16, blur: 8 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              blur: 0,
-              transition: {
-                delay: heroDelays.indicator,
-                type: 'spring',
-                stiffness: 85,
-                damping: 26
-              }
-            }"
-          >
+          <div class="mt-2">
             <HeroScrollIndicator />
           </div>
         </div>
@@ -147,28 +70,20 @@
         <div
           class="group rounded-3xl overflow-hidden"
           v-motion
-          :initial="{ opacity: 0, y: 28, scale: 0.94 }"
-          :enter="{
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            transition: {
-              delay: heroDelays.portrait,
-              type: 'spring',
-              stiffness: 85,
-              damping: 26
-            }
-          }"
+          :initial="motionInitial"
+          :enter="motionEnter(0.22)"
         >
           <NuxtImg 
             src="/WerkIt-©LaurenRoberts2024-56.jpg"
             width="870"
             height="580"
             :alt="t('hero.portraitAlt')"
-            class="block w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
+            class="block w-full aspect-[1.5] object-cover transition-transform duration-700 group-hover:scale-105"
             format="webp"
-            loading="lazy"
-            />
+            loading="eager"
+            fetchpriority="high"
+            preload
+          />
         </div>
       </div>
     </UContainer>
@@ -178,14 +93,25 @@
 <script setup lang="ts">
 const { t } = useI18n()
 
-const heroDelays = {
-  badge: 0.15,
-  heading: 0.3,
-  description: 0.42,
-  ctas: 0.55,
-  indicator: 0.7,
-  portrait: 0.35,
-}
+const spring = {
+  type: 'spring',
+  stiffness: 85,
+  damping: 26
+} as const
+
+const motionInitial = {
+  opacity: 0,
+  y: 24
+} as const
+
+const motionEnter = (delay: number) => ({
+  opacity: 1,
+  y: 0,
+  transition: {
+    ...spring,
+    delay
+  }
+})
 </script>
 
 <style scoped>
@@ -228,22 +154,10 @@ const heroDelays = {
 
 .hero-section .availability-pill__text {
   display: inline-block;
-  max-width: 0;
-  opacity: 0;
-  margin-left: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  transition:
-    max-width 0.35s ease,
-    opacity 0.35s ease,
-    margin-left 0.35s ease,
-    padding-left 0.35s ease;
-}
-
-.hero-section .availability-pill:hover .availability-pill__text {
-  max-width: 999px;
   opacity: 1;
-  margin-left: 1.5rem;
+  max-width: none;
+  margin-left: 0.5rem;
   padding-left: 0.25rem;
+  white-space: nowrap;
 }
 </style>

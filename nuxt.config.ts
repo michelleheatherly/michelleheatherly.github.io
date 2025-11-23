@@ -18,6 +18,12 @@ export default defineNuxtConfig({
   ui: {
     theme: {
       colors: ['primary', 'secondary', 'success', 'info', 'warning', 'error'],
+    },
+    icons: ['heroicons']
+  },
+  icon: {
+    serverBundle: {
+      collections: ['heroicons']
     }
   },
   tailwindcss: {
