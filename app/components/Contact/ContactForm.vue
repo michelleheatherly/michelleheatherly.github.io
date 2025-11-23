@@ -2,23 +2,19 @@
   <form
     ref="formRef"
     class="group/contact relative overflow-hidden rounded-2xl border border-black/10 bg-white/95 p-6 shadow-[0_45px_85px_-45px_rgba(14,20,48,0.55)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-zinc-900/70 md:p-8"
-    v-motion
-    v-motion-pop-visible-once
     @submit.prevent="handleSubmit"
     @pointermove="updateSpotlight"
     @pointerleave="resetSpotlight"
     @pointercancel="resetSpotlight"
+    :aria-busy="isSubmitting"
   >
-    <!-- Web3Forms hidden fields -->
     <input type="hidden" name="access_key" :value="apiKey" />
     <input type="hidden" name="subject" :value="t('contact.form.emailSubject')" />
 
     <div
       class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500"
       :class="{ 'opacity-100': spotlight.active }"
-      :style="{
-        background: `radial-gradient(circle at ${spotlight.x}% ${spotlight.y}%, rgba(165,180,252,0.28), transparent 60%)`
-      }"
+      :style="spotlightStyle"
     ></div>
     <div
       aria-hidden="true"
@@ -143,37 +139,37 @@
 
         <div class="flex justify-end">
           <UButton
+            v-if="status !== 'success'"
             type="submit"
             size="lg"
             class="group overflow-hidden cursor-pointer w-max justify-center"
-            v-motion
             :disabled="isSubmitting"
             :class="{ 'opacity-70 cursor-not-allowed': isSubmitting }"
-            :initial="{ y: 12, opacity: 0 }"
-            :enter="{ y: 0, opacity: 1, transition: { delay: 0.3, duration: 0.5, ease: 'easeOut' } }"
-            v-if="status !== 'success'"
           >
-          <UIcon
-            name="i-heroicons-sparkles-20-solid"
-            class="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-12"
-          />
-          <span>
-            {{ isSubmitting ? t('contact.form.submitting') : t('contact.form.submit') }}
-          </span>
-          <span class="relative ml-2 flex h-2 w-2" v-if="!isSubmitting">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-75"></span>
-            <span class="relative inline-flex h-2 w-2 rounded-full bg-white"></span>
-          </span>
-        </UButton>
+            <UIcon
+              name="i-heroicons-sparkles-20-solid"
+              class="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-12"
+            />
+            <span>
+              {{ isSubmitting ? t('contact.form.submitting') : t('contact.form.submit') }}
+            </span>
+            <span class="relative ml-2 flex h-2 w-2" v-if="!isSubmitting">
+              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70 opacity-75"></span>
+              <span class="relative inline-flex h-2 w-2 rounded-full bg-white"></span>
+            </span>
+          </UButton>
+        </div>
       </div>
-    </div>
     </div>
   </form>
 </template>
 
 <script setup lang="ts">
+import { usePreferredReducedMotion } from '@vueuse/core'
+
 const formRef = ref<HTMLFormElement | null>(null)
-const apiKey = useRuntimeConfig().public.contactApiKey;
+const apiKey = useRuntimeConfig().public.contactApiKey
+const prefersReduced = usePreferredReducedMotion()
 
 const spotlight = reactive({
   x: 50,
@@ -187,8 +183,22 @@ const isSubmitting = ref(false)
 const status = ref<'idle' | 'success' | 'error'>('idle')
 const errorMessage = ref('')
 
+const spotlightStyle = computed(() => {
+  if (!spotlight.active || prefersReduced.value === 'reduce') {
+    // Keep it centered but subtle when inactive or reduced motion
+    return {
+      background:
+        'radial-gradient(circle at 50% 50%, rgba(165,180,252,0.16), transparent 60%)'
+    }
+  }
+
+  return {
+    background: `radial-gradient(circle at ${spotlight.x}% ${spotlight.y}%, rgba(165,180,252,0.28), transparent 60%)`
+  }
+})
+
 const updateSpotlight = (event: PointerEvent) => {
-  if (!formRef.value) return
+  if (!formRef.value || prefersReduced.value === 'reduce') return
 
   const rect = formRef.value.getBoundingClientRect()
   const x = ((event.clientX - rect.left) / rect.width) * 100

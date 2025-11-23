@@ -1,7 +1,8 @@
 <template>
   <div
     class="h-full space-y-6 pr-1"
-    :style="maxHeight ? { height: maxHeight + 'px' } : undefined"
+    :style="maxHeight ? { maxHeight: maxHeight + 'px' } : undefined"
+    :aria-busy="pending"
   >
     <div
       v-if="pending"
@@ -48,6 +49,7 @@
       </div>
     </div>
 
+    <!-- Empty state -->
     <div
       v-else-if="!items.length"
       class="h-full overflow-y-auto rounded-2xl border border-black/10 bg-white/70 p-6 text-sm text-zinc-600 backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5 dark:text-white/70"
@@ -147,16 +149,27 @@ const items = computed<FeedCardItem[]>(() => {
     .slice(0, 3)
 })
 
-const skeletonItems = computed(() => Array.from({ length: 3 }))
+const skeletonItems = computed(() => [0, 1, 2])
 
-function formatDate(iso?: string) {
-  if (!iso) return t('feed.card.unknownDate')
+const dateFormatter = computed(() => {
   try {
-    return new Intl.DateTimeFormat(locale.value, {
+    return new Intl.DateTimeFormat(locale.value || 'en', {
       day: 'numeric',
       month: 'short',
       year: 'numeric'
-    }).format(new Date(iso))
+    })
+  } catch {
+    return null
+  }
+})
+
+function formatDate(iso?: string) {
+  if (!iso) return t('feed.card.unknownDate')
+  const formatter = dateFormatter.value
+  if (!formatter) return t('feed.card.unknownDate')
+
+  try {
+    return formatter.format(new Date(iso))
   } catch {
     return t('feed.card.unknownDate')
   }

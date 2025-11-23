@@ -1,27 +1,15 @@
 <template>
   <section id="skills" class="relative transition-colors duration-300">
     <UContainer class="py-24">
-      <!-- Intro block -->
       <div
         class="max-w-2xl space-y-4 mb-10"
         v-motion
-        :initial="{ opacity: 0, y: 18 }"
-        :visibleOnce="{
-          opacity: 1,
-          y: 0,
-          transition: { delay: skillDelays.container, duration: 0.4, ease: 'easeOut' }
-        }"
+        :initial="motionInitial"
+        :visibleOnce="motionVisible(skillDelays.container)"
       >
         <span
           class="inline-flex items-center gap-2 rounded-full border px-4 py-1
                  text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300"
-          v-motion
-          :initial="{ opacity: 0, y: -8 }"
-          :visibleOnce="{
-            opacity: 1,
-            y: 0,
-            transition: { delay: skillDelays.badge, type: 'spring', stiffness: 160, damping: 20 }
-          }"
         >
           <UIcon name="i-heroicons-wrench-screwdriver-20-solid" class="h-4 w-4" />
           {{ t('skills.badge') }}
@@ -29,54 +17,29 @@
 
         <h2
           class="text-2xl md:text-3xl font-semibold text-zinc-900 dark:text-white transition-colors duration-300"
-          v-motion
-          :initial="{ opacity: 0, y: 12, scale: 0.97 }"
-          :visibleOnce="{
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            transition: { delay: skillDelays.heading, type: 'spring', stiffness: 135, damping: 22 }
-          }"
         >
           {{ t('skills.title') }}
         </h2>
 
         <p
           class="text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
-          v-motion
-          :initial="{ opacity: 0, y: 14, blur: 6 }"
-          :visibleOnce="{
-            opacity: 1,
-            y: 0,
-            blur: 0,
-            transition: { delay: skillDelays.description, type: 'spring', stiffness: 120, damping: 24 }
-          }"
         >
           {{ t('skills.description') }}
         </p>
       </div>
 
-      <!-- Cards grid -->
-      <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div
+        class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6"
+        v-motion
+        :initial="motionInitial"
+        :visibleOnce="motionVisible(skillDelays.cards)"
+      >
         <UCard
-          v-for="(section, index) in skillSections"
+          v-for="section in skillSections"
           :key="section.title"
           class="group relative h-full overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/80
                  bg-white/60 dark:bg-zinc-900/60 backdrop-blur transition-all duration-400
                  hover:-translate-y-1 hover:shadow-[0_22px_55px_-28px_rgba(165,180,252,0.55)] hover:border-cyber-purple/40"
-          v-motion
-          :initial="{ opacity: 0, x: -16, scale: 0.97 }"
-          :visibleOnce="{
-            opacity: 1,
-            x: 0,
-            scale: 1,
-            transition: {
-              delay: skillDelays.cards + 0.05 * index,
-              type: 'spring',
-              stiffness: 155,
-              damping: 20
-            }
-          }"
         >
           <div
             class="pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -241,11 +204,28 @@ const skillSections = computed(() => {
   }))
 })
 
+const spring = {
+  type: 'spring',
+  stiffness: 140,
+  damping: 22
+} as const
+
+const motionInitial = {
+  opacity: 0,
+  y: 18
+} as const
+
+const motionVisible = (delay: number) => ({
+  opacity: 1,
+  y: 0,
+  transition: {
+    ...spring,
+    delay
+  }
+})
+
 const skillDelays = {
   container: 0.0,
-  badge: 0.04,
-  heading: 0.08,
-  description: 0.14,
-  cards: 0.18
+  cards: 0.12
 }
 </script>

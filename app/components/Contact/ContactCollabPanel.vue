@@ -1,5 +1,5 @@
 <template>
-  <div v-motion v-motion-pop-visible-once class="relative space-y-6">
+  <div class="relative space-y-6">
     <span
       v-if="badgeText"
       class="inline-flex items-center gap-2 rounded-full border px-4 py-1
@@ -11,10 +11,10 @@
 
     <div class="space-y-4">
       <h2 class="text-2xl font-bold text-zinc-900 transition-colors duration-300 md:text-3xl dark:text-white">
-        {{ props.headline }}
+        {{ headline }}
       </h2>
       <p class="text-zinc-600 transition-colors duration-300 dark:text-white/70">
-        {{ props.description }}
+        {{ description }}
       </p>
     </div>
 
@@ -36,6 +36,7 @@
             <span>{{ link.label }}</span>
           </UButton>
         </template>
+
         <UButton
           to="#projects"
           variant="soft"
@@ -62,6 +63,9 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
+const headline = computed(() => props.headline)
+const description = computed(() => props.description)
+
 const badgeText = computed(() => props.badge ?? t('contact.badge'))
 
 const socialLinks = useSocialLinks()
@@ -70,6 +74,7 @@ const CONTACT_ORDER = ['email', 'github', 'linkedin'] as const
 
 const contactActions = computed(() => {
   const linksByKey = new Map<string, Record<string, unknown>>()
+
   socialLinks.value.forEach((link) => {
     const key = String((link as Record<string, unknown>).key ?? '').toLowerCase()
     if (key) {
@@ -77,14 +82,17 @@ const contactActions = computed(() => {
     }
   })
 
-  return CONTACT_ORDER.map((key) => linksByKey.get(key)).filter(Boolean).map((link) => {
-    const href = String(link.href ?? '')
-    return {
-      label: String(link.label ?? ''),
-      icon: String(link.icon ?? ''),
-      href,
-      target: href.startsWith('http') ? '_blank' : undefined
-    }
-  })
+  return CONTACT_ORDER
+    .map((key) => linksByKey.get(key))
+    .filter(Boolean)
+    .map((link) => {
+      const href = String(link!.href ?? '')
+      return {
+        label: String(link!.label ?? ''),
+        icon: String(link!.icon ?? ''),
+        href,
+        target: href.startsWith('http') ? '_blank' : undefined
+      }
+    })
 })
 </script>

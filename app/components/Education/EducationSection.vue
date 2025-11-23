@@ -14,22 +14,11 @@
         <div
           class="space-y-5 max-w-2xl"
           v-motion
-          :initial="{ opacity: 0, y: 18 }"
-          :visibleOnce="{
-            opacity: 1,
-            y: 0,
-            transition: { delay: educationDelays.container, duration: 0.4, ease: 'easeOut' }
-          }"
+          :initial="motionInitial"
+          :visibleOnce="motionVisible(educationDelays.container)"
         >
           <span
             class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs uppercase tracking-[0.28em]"
-            v-motion
-            :initial="{ opacity: 0, y: -8 }"
-            :visibleOnce="{
-              opacity: 1,
-              y: 0,
-              transition: { delay: educationDelays.badge, type: 'spring', stiffness: 155, damping: 20 }
-            }"
           >
             <UIcon name="i-heroicons-academic-cap-20-solid" class="h-4 w-4" />
             {{ t('education.badge') }}
@@ -37,51 +26,27 @@
 
           <h2
             class="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white transition-colors duration-300"
-            v-motion
-            :initial="{ opacity: 0, y: 14, scale: 0.97 }"
-            :visibleOnce="{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              transition: { delay: educationDelays.heading, type: 'spring', stiffness: 135, damping: 22 }
-            }"
           >
             {{ t('education.title') }}
           </h2>
 
           <p
             class="text-base text-zinc-600 dark:text-white/70 transition-colors duration-300"
-            v-motion
-            :initial="{ opacity: 0, y: 16, blur: 6 }"
-            :visibleOnce="{
-              opacity: 1,
-              y: 0,
-              blur: 0,
-              transition: { delay: educationDelays.description, type: 'spring', stiffness: 120, damping: 24 }
-            }"
           >
             {{ t('education.description') }}
           </p>
         </div>
 
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        <div
+          class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-5"
+          v-motion
+          :initial="motionInitial"
+          :visibleOnce="motionVisible(educationDelays.cards)"
+        >
           <UCard
-            v-for="(category, index) in educationCategories"
+            v-for="category in educationCategories"
             :key="category.id"
             class="group education-card relative h-full overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 backdrop-blur-xl transition-all duration-400 hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgba(99,102,241,0.55)] dark:border-white/10 dark:bg-white/10"
-            v-motion
-            :initial="{ opacity: 0, y: 18, scale: 0.97 }"
-            :visibleOnce="{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              transition: {
-                delay: educationDelays.cards + index * 0.07,
-                type: 'spring',
-                stiffness: 145,
-                damping: 20
-              }
-            }"
           >
             <div
               class="pointer-events-none absolute -top-24 right-0 h-48 w-48 rounded-full blur-3xl"
@@ -214,13 +179,29 @@ const educationCategories = computed(() => {
   })
 })
 
-// Tighter, more in-sync timings / snappier cards
+const spring = {
+  type: 'spring',
+  stiffness: 135,
+  damping: 22
+} as const
+
+const motionInitial = {
+  opacity: 0,
+  y: 18
+} as const
+
+const motionVisible = (delay: number) => ({
+  opacity: 1,
+  y: 0,
+  transition: {
+    ...spring,
+    delay
+  }
+})
+
 const educationDelays = {
   container: 0.0,
-  badge: 0.04,
-  heading: 0.08,
-  description: 0.14,
-  cards: 0.18
+  cards: 0.14
 }
 </script>
 
