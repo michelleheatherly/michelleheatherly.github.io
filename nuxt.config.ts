@@ -1,19 +1,18 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
     '@nuxt/image',
-    '@nuxt/ui',           // Nuxt UI (Tailwind + UI components)
+    '@nuxt/ui',
     'unplugin-icons/nuxt',
-    '@nuxtjs/color-mode', // Dark/light mode
-    '@vueuse/nuxt',       // VueUse core
-    '@vueuse/motion/nuxt', // VueUse Motion directives & composables
-    '@nuxtjs/i18n'        // Internationalization
+    '@nuxtjs/color-mode',
+    '@vueuse/nuxt',
+    '@vueuse/motion/nuxt',
+    '@nuxtjs/i18n'
   ],
   colorMode: {
     classSuffix: '',
-    preference: 'dark', // default mode
+    preference: 'dark',
     fallback: 'dark'
   },
   ui: {
@@ -48,11 +47,11 @@ export default defineNuxtConfig({
       title: 'Michelle Heatherly',
       meta: [{ name: 'viewport', content: 'width=device-width, initial-scale=1' }],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-        { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-        { rel: 'manifest', href: '/site.webmanifest' },
+        { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: 'favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '16x16', href: 'favicon-16x16.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: 'apple-touch-icon.png' },
+        { rel: 'manifest', href: 'site.webmanifest' },
       ],
     }
   },
