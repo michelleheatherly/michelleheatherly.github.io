@@ -5,7 +5,7 @@
     :aria-busy="pending"
   >
     <div
-      v-if="pending"
+      v-if="pending && !hasAnyItems"
       class="grid h-full gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-2 -mt-2"
       aria-live="polite"
     >
@@ -41,17 +41,14 @@
           </p>
         </div>
       </div>
-      <div class="flex items-center gap-3">
-        <UButton size="xs" variant="soft" @click="refresh">
-          <UIcon name="i-heroicons-arrow-path-20-solid" class="h-4 w-4" />
-          <span>{{ t('feed.error.retry') }}</span>
-        </UButton>
-      </div>
+      <UButton size="xs" variant="soft" @click="refresh">
+        <UIcon name="i-heroicons-arrow-path-20-solid" class="h-4 w-4" />
+        <span>{{ t('feed.error.retry') }}</span>
+      </UButton>
     </div>
 
-    <!-- Empty state -->
     <div
-      v-else-if="!items.length"
+      v-else-if="!localeItems.length"
       class="h-full overflow-y-auto rounded-2xl border border-black/10 bg-white/70 p-6 text-sm text-zinc-600 backdrop-blur-xl transition-colors duration-300 dark:border-white/10 dark:bg-white/5 dark:text-white/70"
     >
       <p class="font-medium text-zinc-700 transition-colors duration-300 dark:text-white">
@@ -86,9 +83,9 @@
             <h3 class="text-lg font-semibold leading-tight text-zinc-900 transition-colors duration-300 dark:text-white">
               <a
                 :href="post.link"
-                class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-black"
                 target="_blank"
                 rel="noopener noreferrer"
+                class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-black"
               >
                 {{ post.title }}
               </a>
@@ -121,9 +118,7 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-  maxHeight?: number | null
-}>()
+const props = defineProps<{ maxHeight?: number | null }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
 const { data, pending, error, refresh } = useFeed()
@@ -136,18 +131,24 @@ type FeedCardItem = {
   lang?: string | null
 }
 
-const items = computed<FeedCardItem[]>(() => {
-  const allItems = (data.value?.items || []) as FeedCardItem[]
-  const activeLocale = locale.value?.startsWith('de') ? 'de' : 'en'
+const allItems = computed<FeedCardItem[]>(() => (data.value?.items || []) as FeedCardItem[])
 
-  return allItems
-    .filter((item) => {
-      const normalizedLang = item.lang?.toLowerCase()
-      if (!normalizedLang) return activeLocale === 'en'
-      return normalizedLang.startsWith(activeLocale)
-    })
-    .slice(0, 3)
+const hasAnyItems = computed(() => allItems.value.length > 0)
+
+const activeLocale = computed(() =>
+  locale.value?.toLowerCase().startsWith('de') ? 'de' : 'en'
+)
+
+const localeItems = computed<FeedCardItem[]>(() => {
+  const loc = activeLocale.value
+  return allItems.value.filter((item) => {
+    const lang = item.lang?.toLowerCase() || ''
+    return lang.startsWith(loc)
+  })
 })
+
+
+const items = computed(() => localeItems.value.slice(0, 3))
 
 const skeletonItems = computed(() => [0, 1, 2])
 

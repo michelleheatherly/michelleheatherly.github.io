@@ -3,9 +3,8 @@
     <UContainer class="relative py-24">
       <div class="grid items-start gap-14 lg:grid-cols-[minmax(0,0.62fr)_minmax(0,1.38fr)]">
         <div
-          :key="motionKey"
-          class="space-y-6"
           ref="leftColRef"
+          class="space-y-6"
           v-motion
           :initial="isClient ? motionInitialLeft : motionStaticLeft"
           :visibleOnce="isClient ? motionVisibleLeft(blogDelays.container) : false"
@@ -24,9 +23,7 @@
               {{ t('blog.title') }}
             </h2>
 
-            <p
-              class="text-lg text-zinc-600 transition-colors duration-300 dark:text-white/70"
-            >
+            <p class="text-lg text-zinc-600 transition-colors duration-300 dark:text-white/70">
               {{ t('blog.description') }}
             </p>
           </div>
@@ -41,7 +38,6 @@
 
           <div
             v-if="showFeedLink || showBlogLink"
-            :key="motionKey + '-btns'"
             class="flex flex-wrap gap-3 pt-2"
           >
             <UButton
@@ -81,14 +77,13 @@
         </div>
 
         <div
-          :key="motionKey + '-right'"
           class="relative min-h-0 overflow-hidden pt-2"
           :style="feedHeight ? { height: feedHeight + 'px' } : undefined"
           v-motion
           :initial="isClient ? motionInitialRight : motionStaticRight"
           :visibleOnce="isClient ? motionVisibleRight(blogDelays.feed) : false"
         >
-          <BlogFeedCards :max-height="feedHeight" />
+          <BlogFeedCards :max-height="feedHeight ?? undefined" />
         </div>
       </div>
     </UContainer>
@@ -100,8 +95,6 @@ const { t, locale } = useI18n({ useScope: 'global' })
 const config = useRuntimeConfig()
 
 const isClient = ref(false)
-const motionKey = computed(() => (isClient.value ? 'client' : 'server'))
-
 onMounted(() => {
   isClient.value = true
 })
@@ -112,19 +105,17 @@ const feedHeight = ref<number | null>(null)
 
 function calcHeights() {
   if (typeof window === 'undefined' || window.innerWidth < 1024) {
-    // Still add headroom in the child, but don't fix height on mobile
     feedHeight.value = null
     return
   }
   const left = leftColRef.value
   const note = noteRef.value
-  if (!left || !note) {
-    feedHeight.value = null
-    return
-  }
+  if (!left || !note) return
+
   const leftTop = left.getBoundingClientRect().top + window.scrollY
   const noteBottom = note.getBoundingClientRect().bottom + window.scrollY
-  feedHeight.value = Math.max(0, Math.round(noteBottom - leftTop))
+  const height = Math.round(noteBottom - leftTop)
+  feedHeight.value = Math.max(0, height)
 }
 
 onMounted(() => {
