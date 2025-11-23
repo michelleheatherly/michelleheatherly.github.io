@@ -166,7 +166,12 @@
                         <span class="capitalize">{{ tag }}</span>
                         <UIcon
                           :name="activeTags.includes(tag) ? 'i-heroicons-minus-circle-20-solid' : 'i-heroicons-plus-circle-20-solid'"
-                          class="h-5 w-5 transition-transform duration-300"
+                          :class="[
+                            'h-5 w-5 transition-transform duration-300',
+                            activeTags.includes(tag)
+                              ? 'text-cyber-purple dark:text-cyber-purple'
+                              : 'text-zinc-500 dark:text-zinc-400'
+                          ]"
                         />
                       </button>
                     </div>
@@ -180,7 +185,7 @@
                 class="ml-auto inline-flex items-center gap-2 rounded-full border border-transparent px-3.5 py-1.5 text-sm font-bold text-cyber-green transition-all duration-300 hover:-translate-y-0.5 hover:text-cyber-green hover:shadow-[0_16px_40px_-28px_rgba(59,130,246,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-green/40 cursor-pointer"
                 @click="clearFilters"
               >
-                <UIcon name="i-heroicons-arrow-path-20-solid" class="h-4 w-4" />
+                <UIcon name="i-heroicons-arrow-path-20-solid" class="h-4 w-4 text-cyber-green dark:text-cyber-green" />
                 {{ t('projects.filters.reset') }}
               </button>
             </div>

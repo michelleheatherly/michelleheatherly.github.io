@@ -1,167 +1,169 @@
 <template>
-  <section
-    id="error-page"
-    class="relative min-h-screen flex items-center justify-center transition-colors duration-300"
-  >
-    <UContainer class="py-16">
-      <div
-        class="mx-auto max-w-2xl rounded-[2.5rem] border border-dashed border-zinc-300/70 bg-[#f3e8ff]/80 px-6 py-10 text-center shadow-sm backdrop-blur-md dark:border-zinc-700/60 dark:bg-white/5"
-        v-motion
-        :initial="{ opacity: 0, y: 32, scale: 0.96 }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          transition: { duration: 0.55, ease: 'easeOut' }
-        }"
-      >
-        <!-- Cat + Heading -->
+  <UApp>
+    <section
+      id="error-page"
+      class="relative min-h-screen flex items-center justify-center transition-colors duration-300"
+    >
+      <UContainer class="py-16">
         <div
-          class="space-y-6"
+          class="mx-auto max-w-2xl rounded-[2.5rem] border border-dashed border-zinc-300/70 bg-[#f3e8ff]/80 px-6 py-10 text-center shadow-sm backdrop-blur-md dark:border-zinc-700/60 dark:bg-white/5"
           v-motion
-          :initial="{ opacity: 0, y: 20 }"
+          :initial="{ opacity: 0, y: 32, scale: 0.96 }"
           :enter="{
             opacity: 1,
             y: 0,
-            transition: { delay: 0.12, duration: 0.45, ease: 'easeOut' }
+            scale: 1,
+            transition: { duration: 0.55, ease: 'easeOut' }
           }"
         >
-          <div class="flex flex-col items-center gap-4">
-             <NuxtImg 
-              src="/confused-kitty.png"
-              width="250"
-              height="250"
-              :alt="t('error.imageAlt')"
-              class="mx-auto h-40 w-40 object-contain error-kitty"
-              format="webp"
-              loading="lazy"
-            />
+          <!-- Cat + Heading -->
+          <div
+            class="space-y-6"
+            v-motion
+            :initial="{ opacity: 0, y: 20 }"
+            :enter="{
+              opacity: 1,
+              y: 0,
+              transition: { delay: 0.12, duration: 0.45, ease: 'easeOut' }
+            }"
+          >
+            <div class="flex flex-col items-center gap-4">
+              <NuxtImg 
+                src="/confused-kitty.png"
+                width="250"
+                height="250"
+                :alt="t('error.imageAlt')"
+                class="mx-auto h-40 w-40 object-contain error-kitty"
+                format="webp"
+                loading="lazy"
+              />
 
-            <div class="space-y-3">
-              <span
-                class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-zinc-600/80 bg-white/80 dark:border-zinc-700/60 dark:bg-white/10 dark:text-zinc-300"
+              <div class="space-y-3">
+                <span
+                  class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-zinc-600/80 bg-white/80 dark:border-zinc-700/60 dark:bg-white/10 dark:text-zinc-300"
+                >
+                  <UIcon
+                    name="i-heroicons-exclamation-triangle-20-solid"
+                    class="h-4 w-4 text-amber-500 dark:text-amber-400"
+                  />
+                  <span>{{ t('error.badge') }}</span>
+                </span>
+
+                <h1
+                  class="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white transition-colors duration-300"
+                >
+                  {{ t('error.heading') }}
+                </h1>
+
+                <p class="text-sm md:text-base text-zinc-600 dark:text-zinc-300">
+                  {{ t('error.description.primary') }}
+                </p>
+                <p class="text-sm md:text-base text-zinc-600 dark:text-zinc-300">
+                  {{ t('error.description.secondary') }}
+                </p>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div
+              class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center"
+              v-motion
+              :initial="{ opacity: 0, y: 22 }"
+              :enter="{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.22, duration: 0.45, ease: 'easeOut' }
+              }"
+            >
+              <UButton
+                color="primary"
+                variant="solid"
+                class="justify-center cursor-pointer"
+                @click="handleRetry"
+              >
+                <UIcon name="i-heroicons-arrow-path-20-solid" class="h-5 w-5" />
+                <span>{{ t('error.actions.retry') }}</span>
+              </UButton>
+
+              <UButton
+                color="secondary"
+                variant="outline"
+                class="justify-center cursor-pointer"
+                @click="handleGoHome"
+              >
+                <UIcon name="i-heroicons-home-20-solid" class="h-5 w-5" />
+                <span>{{ t('error.actions.home') }}</span>
+              </UButton>
+            </div>
+
+            <div class="mt-3 flex justify-center">
+              <LanguageToggle />
+            </div>
+
+            <!-- Technical details -->
+            <div
+              class="mt-6 border-t border-zinc-200/70 pt-4 text-left dark:border-zinc-700/60"
+              v-motion
+              :initial="{ opacity: 0, y: 18 }"
+              :enter="{
+                opacity: 1,
+                y: 0,
+                transition: { delay: 0.3, duration: 0.45, ease: 'easeOut' }
+              }"
+            >
+              <button
+                type="button"
+                class="group inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-zinc-500 transition-all duration-300 hover:-translate-y-0.5 hover:text-purple-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 cursor-pointer"
+                @click="showDetails = !showDetails"
               >
                 <UIcon
-                  name="i-heroicons-exclamation-triangle-20-solid"
-                  class="h-4 w-4 text-amber-500 dark:text-amber-400"
+                  :name="
+                    showDetails
+                      ? 'i-heroicons-chevron-up-20-solid'
+                      : 'i-heroicons-chevron-down-20-solid'
+                  "
+                  class="h-4 w-4 text-zinc-400 transition-transform duration-300 group-hover:translate-y-0.5"
                 />
-                <span>{{ t('error.badge') }}</span>
-              </span>
+                <span>{{ t('error.technical.details') }}</span>
+              </button>
 
-              <h1
-                class="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-white transition-colors duration-300"
-              >
-                {{ t('error.heading') }}
-              </h1>
+              <Transition name="fade-slide">
+                <div
+                  v-if="showDetails"
+                  class="mt-3 rounded-2xl border border-zinc-200/70 bg-zinc-950/95 p-4 text-xs text-zinc-200 shadow-inner max-h-64 overflow-auto font-mono dark:border-zinc-700/70"
+                >
+                  <p class="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-zinc-400">
+                    {{ t('error.technical.status') }}
+                  </p>
+                  <p class="mb-3 text-sm">{{ displayStatusCode }}</p>
 
-              <p class="text-sm md:text-base text-zinc-600 dark:text-zinc-300">
-                {{ t('error.description.primary') }}
-              </p>
-              <p class="text-sm md:text-base text-zinc-600 dark:text-zinc-300">
-                {{ t('error.description.secondary') }}
-              </p>
+                  <p class="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-zinc-400">
+                    {{ t('error.technical.message') }}
+                  </p>
+                  <p class="mb-3 text-sm break-words">
+                    {{ displayMessage }}
+                  </p>
+
+                  <p
+                    v-if="displayStack"
+                    class="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-zinc-400"
+                  >
+                    {{ t('error.technical.stack') }}
+                  </p>
+                  <pre
+                    v-if="displayStack"
+                    class="whitespace-pre-wrap text-[0.7rem] leading-relaxed text-zinc-300"
+                  >
+  {{ displayStack }}</pre
+                  >
+                </div>
+              </Transition>
             </div>
           </div>
-
-          <!-- Actions -->
-          <div
-            class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center"
-            v-motion
-            :initial="{ opacity: 0, y: 22 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              transition: { delay: 0.22, duration: 0.45, ease: 'easeOut' }
-            }"
-          >
-            <UButton
-              color="primary"
-              variant="solid"
-              class="justify-center cursor-pointer"
-              @click="handleRetry"
-            >
-              <UIcon name="i-heroicons-arrow-path-20-solid" class="h-5 w-5" />
-              <span>{{ t('error.actions.retry') }}</span>
-            </UButton>
-
-            <UButton
-              color="secondary"
-              variant="outline"
-              class="justify-center cursor-pointer"
-              @click="handleGoHome"
-            >
-              <UIcon name="i-heroicons-home-20-solid" class="h-5 w-5" />
-              <span>{{ t('error.actions.home') }}</span>
-            </UButton>
-          </div>
-
-          <div class="mt-3 flex justify-center">
-            <LanguageToggle />
-          </div>
-
-          <!-- Technical details -->
-          <div
-            class="mt-6 border-t border-zinc-200/70 pt-4 text-left dark:border-zinc-700/60"
-            v-motion
-            :initial="{ opacity: 0, y: 18 }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              transition: { delay: 0.3, duration: 0.45, ease: 'easeOut' }
-            }"
-          >
-            <button
-              type="button"
-              class="group inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-zinc-500 transition-all duration-300 hover:-translate-y-0.5 hover:text-purple-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 cursor-pointer"
-              @click="showDetails = !showDetails"
-            >
-              <UIcon
-                :name="
-                  showDetails
-                    ? 'i-heroicons-chevron-up-20-solid'
-                    : 'i-heroicons-chevron-down-20-solid'
-                "
-                class="h-4 w-4 text-zinc-400 transition-transform duration-300 group-hover:translate-y-0.5"
-              />
-              <span>{{ t('error.technical.details') }}</span>
-            </button>
-
-            <Transition name="fade-slide">
-              <div
-                v-if="showDetails"
-                class="mt-3 rounded-2xl border border-zinc-200/70 bg-zinc-950/95 p-4 text-xs text-zinc-200 shadow-inner max-h-64 overflow-auto font-mono dark:border-zinc-700/70"
-              >
-                <p class="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-zinc-400">
-                  {{ t('error.technical.status') }}
-                </p>
-                <p class="mb-3 text-sm">{{ displayStatusCode }}</p>
-
-                <p class="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-zinc-400">
-                  {{ t('error.technical.message') }}
-                </p>
-                <p class="mb-3 text-sm break-words">
-                  {{ displayMessage }}
-                </p>
-
-                <p
-                  v-if="displayStack"
-                  class="mb-1 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-zinc-400"
-                >
-                  {{ t('error.technical.stack') }}
-                </p>
-                <pre
-                  v-if="displayStack"
-                  class="whitespace-pre-wrap text-[0.7rem] leading-relaxed text-zinc-300"
-                >
-{{ displayStack }}</pre
-                >
-              </div>
-            </Transition>
-          </div>
         </div>
-      </div>
-    </UContainer>
-  </section>
+      </UContainer>
+    </section>
+  </UApp>
 </template>
 
 <script setup lang="ts">

@@ -106,16 +106,16 @@
             </div>
           </div>
 
-          <span
-            class="pointer-events-none absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/80 text-zinc-500 dark:border-zinc-700/80 dark:bg-zinc-900/80
-                   opacity-80 transition duration-500 group-hover:opacity-0 group-hover:-translate-y-1 group-hover:scale-95"
-            aria-hidden="true"
-          >
-            <UIcon
-              name="i-heroicons-chevron-double-down-20-solid"
-              class="h-4 w-4 transition-transform duration-500 group-hover:-translate-y-1"
-            />
-          </span>
+            <span
+              class="pointer-events-none absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/80 text-zinc-500 dark:border-zinc-700/80 dark:bg-zinc-900/80
+                     opacity-80 transition duration-500 group-hover:opacity-0 group-hover:-translate-y-1 group-hover:scale-95"
+              aria-hidden="true"
+            >
+              <UIcon
+                name="i-heroicons-chevron-double-down-20-solid"
+                class="h-4 w-4 transition-transform duration-500 group-hover:-translate-y-1 text-zinc-500 dark:text-zinc-300"
+              />
+            </span>
         </UCard>
       </div>
     </UContainer>
