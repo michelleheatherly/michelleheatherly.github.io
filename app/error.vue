@@ -28,13 +28,12 @@
             }"
           >
             <div class="flex flex-col items-center gap-4">
-              <NuxtImg 
+              <img 
                 src="/confused-kitty.png"
                 width="250"
                 height="250"
                 :alt="t('error.imageAlt')"
                 class="mx-auto h-40 w-40 object-contain error-kitty"
-                format="webp"
                 loading="lazy"
               />
 
@@ -42,8 +41,8 @@
                 <span
                   class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-zinc-600/80 bg-white/80 dark:border-zinc-700/60 dark:bg-white/10 dark:text-zinc-300"
                 >
-                  <UIcon
-                    name="i-heroicons-exclamation-triangle-20-solid"
+                 <UIcon
+                    :name="IconExclamationTriangle"
                     class="h-4 w-4 text-amber-500 dark:text-amber-400"
                   />
                   <span>{{ t('error.badge') }}</span>
@@ -81,7 +80,7 @@
                 class="justify-center cursor-pointer"
                 @click="handleRetry"
               >
-                <UIcon name="i-heroicons-arrow-path-20-solid" class="h-5 w-5" />
+                <UIcon :name="IconArrowPath" class="h-5 w-5" />
                 <span>{{ t('error.actions.retry') }}</span>
               </UButton>
 
@@ -91,7 +90,7 @@
                 class="justify-center cursor-pointer"
                 @click="handleGoHome"
               >
-                <UIcon name="i-heroicons-home-20-solid" class="h-5 w-5" />
+                <UIcon :name="IconHome" class="h-5 w-5" />
                 <span>{{ t('error.actions.home') }}</span>
               </UButton>
             </div>
@@ -117,11 +116,7 @@
                 @click="showDetails = !showDetails"
               >
                 <UIcon
-                  :name="
-                    showDetails
-                      ? 'i-heroicons-chevron-up-20-solid'
-                      : 'i-heroicons-chevron-down-20-solid'
-                  "
+                  :name="showDetails ? IconChevronUp : IconChevronDown"
                   class="h-4 w-4 text-zinc-400 transition-transform duration-300 group-hover:translate-y-0.5"
                 />
                 <span>{{ t('error.technical.details') }}</span>
@@ -169,7 +164,12 @@
 <script setup lang="ts">
 import type { NuxtError } from 'nuxt/app'
 import { clearError } from '#app'
-import LanguageToggle from '~/components/LanguageToggle.vue'
+import IconExclamationTriangle from '~icons/heroicons/exclamation-triangle-20-solid'
+import IconArrowPath from '~icons/heroicons/arrow-path-20-solid'
+import IconHome from '~icons/heroicons/home-20-solid'
+import IconChevronUp from '~icons/heroicons/chevron-up-20-solid'
+import IconChevronDown from '~icons/heroicons/chevron-down-20-solid'
+
 
 const props = defineProps<{
   error: NuxtError

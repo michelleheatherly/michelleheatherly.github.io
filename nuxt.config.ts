@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     '@nuxt/ui',           // Nuxt UI (Tailwind + UI components)
+    'unplugin-icons/nuxt',
     '@nuxtjs/color-mode', // Dark/light mode
     '@vueuse/nuxt',       // VueUse core
     '@vueuse/motion/nuxt', // VueUse Motion directives & composables

@@ -23,7 +23,7 @@
       >
         <span class="h-2 w-2 rounded-full bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.8)]"></span>
         <span class="uppercase tracking-[0.12em]">{{ t('scrollIndicator.top') }}</span>
-        <UIcon name="i-heroicons-chevron-up-20-solid" class="h-4 w-4 text-white/95" />
+        <UIcon :name="ChevronUpIcon" class="h-4 w-4 text-white/95" />
       </button>
     </Transition>
   </Teleport>
@@ -31,6 +31,7 @@
 
 <script setup lang="ts">
 import { useWindowScroll, useThrottleFn } from '@vueuse/core'
+import ChevronUpIcon from '~icons/heroicons/chevron-up-20-solid'
 
 type Props = {
   footerVisible?: boolean

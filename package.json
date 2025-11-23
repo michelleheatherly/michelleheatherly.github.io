@@ -26,8 +26,10 @@
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.3",
+    "@iconify-json/lucide": "^1.2.74",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.14"
+    "tailwindcss": "^4.1.14",
+    "unplugin-icons": "^22.5.0"
   }
 }

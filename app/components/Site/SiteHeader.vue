@@ -13,12 +13,11 @@
         to="/"
         class="flex items-center gap-3 focus-visible:outline-none"
         @click="handleBrandClick"
-        v-motion
-        :initial="{ opacity: 0, y: -6 }"
-        :enter="{ opacity: 1, y: 0, transition: { duration: 0.4 } }"
       >
-        <span class="font-semibold tracking-wide text-zinc-900 dark:text-white transition-colors duration-300">
-          <{{ brandLabel }} />
+        <span
+          class="font-semibold tracking-wide text-zinc-900 dark:text-white transition-colors duration-300"
+        >
+          &lt;{{ brandLabel }} /&gt;
         </span>
       </NuxtLink>
 
@@ -26,11 +25,8 @@
       <nav class="hidden lg:block">
         <ul class="flex gap-6 items-center">
           <li
-            v-for="(l, index) in navLinks"
+            v-for="l in navLinks"
             :key="l.to"
-            v-motion
-            :initial="{ opacity: prefersReduced === 'reduce' ? 1 : 0, y: prefersReduced === 'reduce' ? 0 : -6 }"
-            :enter="navEnterVariant(index)"
           >
             <ULink
               :to="l.to"
@@ -53,12 +49,11 @@
       <div class="flex items-center gap-2">
         <LanguageToggle />
         <ThemeToggle />
-        <!-- Header menu toggle -->
         <button
           type="button"
           class="menu-toggle menu-toggle--hoverable inline-flex cursor-pointer items-center justify-center lg:hidden transition duration-300
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
-                text-zinc-800 dark:text-zinc-100 hover:text-zinc-950 dark:hover:text-white"
+                 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
+                 text-zinc-800 dark:text-zinc-100 hover:text-zinc-950 dark:hover:text-white"
           :class="{
             'menu-toggle--bg-open': isMenuOpen,
             'menu-toggle--icon-open': iconOpenState,
@@ -91,8 +86,8 @@
               <button
                 type="button"
                 class="menu-toggle menu-toggle--hoverable inline-flex cursor-pointer items-center justify-center pointer-events-auto transition duration-300
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
-                      text-zinc-800 dark:text-zinc-100 hover:text-zinc-950 dark:hover:text-white"
+                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
+                       text-zinc-800 dark:text-zinc-100 hover:text-zinc-950 dark:hover:text-white"
                 :class="{
                   'menu-toggle--icon-open': iconOpenState,
                   'menu-toggle--closed': !isMenuOpen
@@ -117,13 +112,8 @@
             <nav :id="menuId">
               <ul class="space-y-6">
                 <li
-                  v-for="(l, index) in navLinks"
+                  v-for="l in navLinks"
                   :key="l.to"
-                  v-motion
-                  :initial="prefersReduced === 'reduce'
-                    ? { opacity: 1, y: 0, scale: 1 }
-                    : { opacity: 0, y: 18, scale: 0.96 }"
-                  :enter="mobileNavEnterVariant(index)"
                 >
                   <ULink
                     :to="l.to"
@@ -199,7 +189,6 @@ const navLinkDefs = [
   { key: 'contact', to: '#contact' }
 ] as const
 
-// helper similar to footer for resolving locale-objects
 const socialLinks = useSocialLinks()
 
 const prefersReduced = usePreferredReducedMotion()
@@ -207,12 +196,11 @@ const { y } = useWindowScroll()
 const { width } = useWindowSize()
 
 const footerVisible = useState<boolean>('footer-visible', () => false)
-const isMenuOpen = ref(false)       // controls overlay visibility
-const iconOpenState = ref(false)    // controls burger ↔ X animation
+const isMenuOpen = ref(false)       // overlay visibility
+const iconOpenState = ref(false)    // burger ↔ X animation
 const rippleOrigin = ref({ x: 0, y: 0 })
 const menuId = 'site-navigation'
 
-// store timeout id for delayed open
 let openTimeout: number | undefined
 
 const navLinks = computed(() =>
@@ -222,7 +210,10 @@ const navLinks = computed(() =>
   }))
 )
 const brandLabel = computed(() => t('nav.brand'))
-const menuButtonLabel = computed(() => (isMenuOpen.value ? t('nav.menu.close') : t('nav.menu.open')))
+
+const menuButtonLabel = computed(() =>
+  isMenuOpen.value ? t('nav.menu.close') : t('nav.menu.open')
+)
 
 const glassProgress = computed(() => {
   if (isMenuOpen.value) {
@@ -232,14 +223,17 @@ const glassProgress = computed(() => {
   const start = 70
   const range = 110
   const progress = (y.value - start) / range
-
   return Math.min(Math.max(progress, 0), 1)
 })
 
-const showElevation = computed(() => y.value > 150 && !footerVisible.value && !isMenuOpen.value)
+const showElevation = computed(
+  () => y.value > 150 && !footerVisible.value && !isMenuOpen.value
+)
+
 const headerSurfaceClasses = computed(() =>
   showElevation.value ? 'shadow-[0_18px_34px_-28px_rgba(124,58,237,0.55)]' : ''
 )
+
 const headerSurfaceStyles = computed(() => {
   const eased = glassProgress.value === 0 ? 0 : Math.pow(glassProgress.value, 1.12)
   const lightBgOpacity = (0.28 * eased).toFixed(3)
@@ -257,74 +251,49 @@ const headerSurfaceStyles = computed(() => {
     WebkitBackdropFilter: `blur(${blurStrength}px)`
   }
 })
-const shouldHideHeader = computed(() => footerVisible.value && !isMenuOpen.value)
-const allowMenuRipple = computed(() => prefersReduced.value !== 'reduce')
+
+const shouldHideHeader = computed(
+  () => footerVisible.value && !isMenuOpen.value
+)
+
+const allowMenuRipple = computed(
+  () => prefersReduced.value !== 'reduce'
+)
+
 const rippleStyle = computed(() => ({
   '--ripple-x': `${rippleOrigin.value.x}px`,
   '--ripple-y': `${rippleOrigin.value.y}px`
 }))
 
-const navEnterVariant = (index: number) =>
-  prefersReduced.value === 'reduce'
-    ? {
-        opacity: 1,
-        y: 0,
-        transition: {
-          duration: 0
-        }
-      }
-    : {
-        opacity: 1,
-        y: 0,
-        transition: {
-          duration: 0.4,
-          delay: 0.05 + index * 0.05
-        }
-      }
-
-const mobileNavEnterVariant = (index: number) =>
-  prefersReduced.value === 'reduce'
-    ? {
-        opacity: 1,
-        y: 0,
-        scale: 1
-      }
-    : {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        transition: {
-          duration: 0.45,
-          delay: 0.18 + index * 0.06,
-          easing: 'easeOut'
-        }
-      }
-
 function openMenu(event?: MouseEvent) {
-  // animate burger → X immediately
   iconOpenState.value = true
 
   if (import.meta.client) {
     if (event) {
       rippleOrigin.value = { x: event.clientX, y: event.clientY }
     } else {
-      rippleOrigin.value = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
+      rippleOrigin.value = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2
+      }
     }
 
-    // delay overlay so the icon animation is visible
     if (openTimeout) {
       clearTimeout(openTimeout)
     }
-    openTimeout = window.setTimeout(() => {
-      isMenuOpen.value = true
-    }, prefersReduced.value === 'reduce' ? 0 : 160)
+
+    openTimeout = window.setTimeout(
+      () => {
+        isMenuOpen.value = true
+      },
+      prefersReduced.value === 'reduce' ? 0 : 160
+    )
   } else {
     isMenuOpen.value = true
   }
 }
 
 function closeMenu() {
-  // animate X → burger
   iconOpenState.value = false
 
   if (import.meta.client && openTimeout) {
@@ -351,7 +320,7 @@ function handleBrandClick() {
   closeMenu()
 }
 
-// body scroll lock
+// Body scroll lock + breakpoint handling
 if (import.meta.client) {
   watch(isMenuOpen, (open) => {
     document.body.classList.toggle('overflow-hidden', open)
@@ -409,9 +378,15 @@ onBeforeUnmount(() => {
   --header-border-opacity: var(--header-border-opacity-dark);
 }
 
+/* Overlay transition */
 .menu-overlay-enter-active,
 .menu-overlay-leave-active {
   transition: opacity 0.32s ease;
+}
+
+.menu-overlay-enter-from,
+.menu-overlay-leave-to {
+  opacity: 0;
 }
 
 .menu-overlay-surface {
@@ -419,7 +394,7 @@ onBeforeUnmount(() => {
   transition: background 0.35s ease;
 }
 
-/* Base button: transparent when closed */
+/* Menu toggle button */
 .menu-toggle {
   position: relative;
   z-index: 90;
@@ -439,22 +414,12 @@ onBeforeUnmount(() => {
 .menu-toggle--hoverable {
   transition: transform 0.3s ease;
 }
+
 .menu-toggle--hoverable:hover {
   transform: translateY(-2px) rotate(6deg);
 }
 
-/* Closed state: lines brighten on hover (clickable hint) */
-.menu-toggle--closed:hover .menu-toggle__line {
-  opacity: 0.95;
-  mix-blend-mode: screen;
-}
-
-/* Dark mode tweak for better visibility */
-.menu-toggle:hover .menu-toggle__line {
-  opacity: 0.9;
-  background-color: currentColor; /* ensures color shifts with text */
-}
-
+/* Burger lines */
 .menu-toggle__line {
   position: absolute;
   width: 22px;
@@ -467,7 +432,6 @@ onBeforeUnmount(() => {
     opacity 0.25s ease;
 }
 
-/* staggered positions for burger */
 .menu-toggle__line:nth-child(1) {
   top: 12px;
 }
@@ -480,7 +444,7 @@ onBeforeUnmount(() => {
   top: 28px;
 }
 
-/* Icon state: burger → X when open */
+/* Burger → X */
 .menu-toggle--icon-open .menu-toggle__line:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
 }
@@ -493,7 +457,6 @@ onBeforeUnmount(() => {
   transform: translateY(-8px) rotate(-45deg);
 }
 
-/* Slight visual feedback on hover (lines follow currentColor) */
 .menu-toggle:hover .menu-toggle__line {
   opacity: 0.92;
 }
@@ -503,16 +466,13 @@ onBeforeUnmount(() => {
   .menu-toggle--hoverable {
     transition: none;
   }
+
   .menu-toggle--hoverable:hover {
     transform: none;
   }
 }
 
-.menu-overlay-enter-from,
-.menu-overlay-leave-to {
-  opacity: 0;
-}
-
+/* Ripple */
 .menu-ripple {
   position: fixed;
   width: 120vmax;
@@ -521,7 +481,12 @@ onBeforeUnmount(() => {
   top: var(--ripple-y);
   border-radius: 9999px;
   transform: translate(-50%, -50%) scale(0.05);
-  background: radial-gradient(circle at center, rgba(155, 92, 255, 0.72) 0%, rgba(43, 245, 160, 0.28) 45%, rgba(12, 10, 16, 0) 70%);
+  background: radial-gradient(
+    circle at center,
+    rgba(155, 92, 255, 0.72) 0%,
+    rgba(43, 245, 160, 0.28) 45%,
+    rgba(12, 10, 16, 0) 70%
+  );
   opacity: 0;
   pointer-events: none;
 }
@@ -535,7 +500,6 @@ onBeforeUnmount(() => {
     transform: translate(-50%, -50%) scale(0.05);
     opacity: 0.75;
   }
-
   100% {
     transform: translate(-50%, -50%) scale(1);
     opacity: 0;
