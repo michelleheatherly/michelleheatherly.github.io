@@ -250,9 +250,18 @@ const skillDelays = {
 
 const hoveredId = ref<string | null>(null)
 const manualExpandedId = ref<string | null>(null)
+const blockedHoverId = ref<string | null>(null)
 
 const toggleSection = (id: string) => {
-  manualExpandedId.value = manualExpandedId.value === id ? null : id
+  const currentlyExpanded = isExpanded(id)
+
+  if (currentlyExpanded) {
+    manualExpandedId.value = null
+    blockedHoverId.value = id
+  } else {
+    manualExpandedId.value = id
+    blockedHoverId.value = null
+  }
 }
 
 const handleCardMouseEnter = (id: string) => {
@@ -263,7 +272,12 @@ const handleCardMouseLeave = (id: string) => {
   if (hoveredId.value === id) {
     hoveredId.value = null
   }
+  if (blockedHoverId.value === id) {
+    blockedHoverId.value = null
+  }
 }
 
-const isExpanded = (id: string) => hoveredId.value === id || manualExpandedId.value === id
+const isExpanded = (id: string) =>
+  manualExpandedId.value === id ||
+  (hoveredId.value === id && blockedHoverId.value !== id)
 </script>
