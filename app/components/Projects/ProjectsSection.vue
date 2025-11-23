@@ -34,9 +34,9 @@
             <UButton
               color="neutral"
               variant="outline"
-              href="/resume.pdf"
-              download
+              type="button"
               class="justify-center group border transition-colors duration-300 bg-transparent"
+              @click="downloadResume"
             >
               <UIcon
                 :name="IconArrowDownTray"
@@ -462,6 +462,21 @@ const clearFilters = () => {
   activeCategory.value = 'all'
   clearTagFilters()
   closeTagMenu()
+}
+
+const downloadResume = () => {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const resumePath = '/resume.pdf'
+  const anchor = document.createElement('a')
+  anchor.href = new URL(resumePath, window.location.origin).href
+  anchor.download = resumePath.split('/').pop() ?? 'resume.pdf'
+  anchor.rel = 'noopener noreferrer'
+  document.body.appendChild(anchor)
+  anchor.click()
+  document.body.removeChild(anchor)
 }
 </script>
 
