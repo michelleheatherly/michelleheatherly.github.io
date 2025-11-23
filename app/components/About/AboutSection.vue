@@ -1,5 +1,5 @@
 <template>
-  <section id="about" class="relative overflow-hidden transition-colors duration-300">
+  <section id="about" class="relative transition-colors duration-300">
     <UContainer class="relative py-24">
       <div class="space-y-12">
         <div class="flex justify-start">
@@ -16,8 +16,8 @@
           <div
             class="relative space-y-10 pb-6 sm:pb-8 lg:col-span-7"
             v-motion
-            :initial="motionInitial"
-            :visibleOnce="motionVisible(0.08)"
+            :initial="motionInitialText"
+            :visibleOnce="motionVisibleText(0.08)"
           >
             <div class="space-y-8">
               <div class="space-y-4">
@@ -45,7 +45,7 @@
                     class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500
                            group-hover:opacity-100"
                     style="background: radial-gradient(120% 120% at 0% 0%, rgba(34,197,94,0.18), transparent 55%)"
-                  ></div>
+                  />
                   <div class="relative">
                     <p class="text-xs font-semibold uppercase tracking-wide">
                       {{ t('about.cards.superpower.title') }}
@@ -65,7 +65,7 @@
                     class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500
                            group-hover:opacity-100"
                     style="background: radial-gradient(120% 120% at 90% 10%, rgba(59,130,246,0.2), transparent 55%)"
-                  ></div>
+                  />
                   <div class="relative">
                     <p class="text-xs font-semibold uppercase tracking-wide">
                       {{ t('about.cards.approach.title') }}
@@ -85,7 +85,7 @@
                     class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500
                            group-hover:opacity-100"
                     style="background: radial-gradient(120% 120% at 10% 90%, rgba(168,85,247,0.2), transparent 55%)"
-                  ></div>
+                  />
                   <div class="relative">
                     <p class="text-xs font-semibold uppercase tracking-wide">
                       {{ t('about.cards.toolkit.title') }}
@@ -105,7 +105,7 @@
                     class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500
                            group-hover:opacity-100"
                     style="background: radial-gradient(120% 120% at 90% 90%, rgba(236,72,153,0.18), transparent 55%)"
-                  ></div>
+                  />
                   <div class="relative">
                     <p class="text-xs font-semibold uppercase tracking-wide">
                       {{ t('about.cards.focus.title') }}
@@ -135,21 +135,22 @@
           <div
             class="lg:col-span-5 lg:pl-6 xl:pl-10 lg:flex lg:items-start lg:justify-center"
             v-motion
-            :initial="motionInitial"
-            :visibleOnce="motionVisible(0.18)"
+            :initial="motionInitialImage"
+            :visibleOnce="motionVisibleImage(0.16)"
           >
             <div
               class="group relative overflow-hidden rounded-[2.75rem] bg-transparent transition-colors duration-300"
             >
               <div class="relative overflow-hidden rounded-[2.75rem]">
-                <NuxtImg 
+                <NuxtImg
                   src="/WerkIt-©LaurenRoberts2024-53.jpg"
                   width="569"
                   height="850"
                   :alt="t('about.portraitAlt')"
                   class="block h-auto w-full rounded-[2.75rem] object-cover transition-transform duration-700 group-hover:scale-105 lg:h-[34rem] lg:max-h-[34rem]"
                   format="webp"
-                  loading="lazy"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -165,9 +166,7 @@ const { t, tm, rt } = useI18n()
 
 const aboutBadges = computed(() => {
   const raw = tm('about.badges')
-  if (!Array.isArray(raw))
-    return []
-
+  if (!Array.isArray(raw)) return []
   return raw.map((badge) => (typeof badge === 'string' ? badge : rt(badge)))
 })
 
@@ -177,12 +176,26 @@ const spring = {
   damping: 22
 } as const
 
-const motionInitial = {
+const motionInitialText = {
   opacity: 0,
   y: 18
 } as const
 
-const motionVisible = (delay: number) => ({
+const motionVisibleText = (delay: number) => ({
+  opacity: 1,
+  y: 0,
+  transition: {
+    ...spring,
+    delay
+  }
+})
+
+const motionInitialImage = {
+  opacity: 0,
+  y: 26
+} as const
+
+const motionVisibleImage = (delay: number) => ({
   opacity: 1,
   y: 0,
   transition: {
