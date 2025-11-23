@@ -6,9 +6,7 @@
            hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(129,140,248,0.65)]
            hover:border-cyber-purple/30
            focus-within:ring-2 focus-within:ring-cyber-purple/40"
-    :ui="{
-      body: 'relative flex h-full flex-col p-0'
-    }"
+    :ui="{ body: 'relative flex h-full flex-col p-0' }"
     @pointermove="handlePointerMove"
     @pointerleave="resetSpotlight"
   >
@@ -38,6 +36,7 @@
           class="h-44 w-full object-cover rounded-t-2xl transition-all duration-500 ease-out group-hover:scale-105"
           format="webp"
           loading="lazy"
+          decoding="async"
         />
       </a>
 
@@ -129,46 +128,15 @@ const projectCodeHref = computed(() => {
   return source && source.length > 0 ? source : ''
 })
 
-const localImageEntries = import.meta.glob('@/assets/images/**/*', {
-  eager: true,
-  import: 'default'
-}) as Record<string, string>
-
-const localImageMap = Object.fromEntries(
-  Object.entries(localImageEntries).map(([key, value]) => {
-    const normalizedKey = key
-      .replace(/^(\.\.\/)+/, '')
-      .replace(/^@\/?/, '')
-      .replace(/^~\//, '')
-      .replace(/^\/+/, '')
-    return [normalizedKey, value]
-  })
-)
-
 const projectImageSrc = computed(() => {
-  const source = project.value.image
-  if (!source) return ''
+  const raw = project.value.image?.trim() ?? ''
+  if (!raw) return ''
 
-  const isRemote = /^(https?:)?\/\//i.test(source) || source.startsWith('data:')
-  if (isRemote) return source
-
-  const normalizedSource = source
-    .replace(/^~\//, '')
-    .replace(/^@\//, '')
-    .replace(/^\/+/, '')
-
-  const lookupCandidates = [
-    normalizedSource,
-    normalizedSource.startsWith('assets/') ? normalizedSource : `assets/${normalizedSource}`,
-    normalizedSource.replace(/^app\//, '')
-  ]
-
-  for (const candidate of lookupCandidates) {
-    const hit = localImageMap[candidate]
-    if (hit) return hit
+  if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('data:')) {
+    return raw
   }
 
-  return source
+  return raw.startsWith('/') ? raw : `/${raw}`
 })
 
 const prefersReduced = usePreferredReducedMotion()

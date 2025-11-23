@@ -21,9 +21,7 @@
           {{ t('skills.title') }}
         </h2>
 
-        <p
-          class="text-zinc-600 dark:text-zinc-300 transition-colors duration-300"
-        >
+        <p class="text-zinc-600 dark:text-zinc-300 transition-colors duration-300">
           {{ t('skills.description') }}
         </p>
       </div>
@@ -36,22 +34,26 @@
       >
         <UCard
           v-for="section in skillSections"
-          :key="section.title"
+          :key="section.id"
           class="group relative h-full overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/80
                  bg-white/60 dark:bg-zinc-900/60 backdrop-blur transition-all duration-400
-                 hover:-translate-y-1 hover:shadow-[0_22px_55px_-28px_rgba(165,180,252,0.55)] hover:border-cyber-purple/40"
+                 hover:-translate-y-1 hover:shadow-[0_22px_55px_-28px_rgba(165,180,252,0.55)] hover:border-cyber-purple/40
+                 cursor-pointer"
+          @mouseenter="handleCardMouseEnter(section.id)"
+          @mouseleave="handleCardMouseLeave(section.id)"
+          @click="toggleSection(section.id)"
         >
           <div
-            class="pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-            :class="section.accentGradient"
+            class="pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500"
+            :class="[section.accentGradient, { 'opacity-100': isExpanded(section.id) }]"
           />
           <div
-            class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 mix-blend-overlay group-hover:opacity-70"
-            :class="section.motif"
+            class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 mix-blend-overlay"
+            :class="[section.motif, { 'opacity-70': isExpanded(section.id) }]"
           />
           <div
-            class="pointer-events-none absolute -right-12 top-12 h-28 w-28 rounded-full blur-3xl opacity-0 transition duration-700 group-hover:opacity-80"
-            :class="section.accentGlow"
+            class="pointer-events-none absolute -right-12 top-12 h-28 w-28 rounded-full blur-3xl opacity-0 transition duration-700"
+            :class="[section.accentGlow, { 'opacity-80': isExpanded(section.id) }]"
           />
 
           <div class="relative p-6 h-full">
@@ -69,7 +71,8 @@
                     />
                   </span>
                   <span
-                    class="pointer-events-none absolute -right-1 -top-1 h-3 w-3 rounded-full bg-cyber-purple/80 opacity-0 transition duration-500 group-hover:opacity-100 group-hover:animate-ping"
+                    class="pointer-events-none absolute -right-1 -top-1 h-3 w-3 rounded-full bg-cyber-purple/80 transition duration-500"
+                    :class="isExpanded(section.id) ? 'opacity-100 animate-ping' : 'opacity-0'"
                   />
                 </div>
                 <div>
@@ -96,7 +99,8 @@
 
               <div class="mt-auto">
                 <div
-                  class="overflow-hidden rounded-2xl border border-zinc-200/60 dark:border-zinc-800/70 bg-white/60 dark:bg-zinc-900/70 transition-all duration-500 max-h-0 opacity-0 group-hover:max-h-28 group-hover:opacity-100"
+                  class="overflow-hidden rounded-2xl border border-zinc-200/60 dark:border-zinc-800/70 bg-white/60 dark:bg-zinc-900/70 transition-all duration-500"
+                  :class="isExpanded(section.id) ? 'max-h-28 opacity-100' : 'max-h-0 opacity-0'"
                 >
                   <p class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
                     {{ section.peek }}
@@ -106,16 +110,26 @@
             </div>
           </div>
 
-            <span
-              class="pointer-events-none absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full border border-zinc-200/80 bg-white/80 text-zinc-500 dark:border-zinc-700/80 dark:bg-zinc-900/80
-                     opacity-80 transition duration-500 group-hover:opacity-0 group-hover:-translate-y-1 group-hover:scale-95"
-              aria-hidden="true"
-            >
-              <UIcon
-                name="i-heroicons-chevron-double-down-20-solid"
-                class="h-4 w-4 transition-transform duration-500 group-hover:-translate-y-1 text-zinc-500 dark:text-zinc-300"
-              />
-            </span>
+          <button
+          class="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full
+                border border-zinc-200/80 bg-white/80 text-zinc-500 dark:border-zinc-700/80 dark:bg-zinc-900/80
+                opacity-80 transition duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40"
+            :class="isExpanded(section.id) ? 'opacity-0 -translate-y-1 scale-95' : ''"
+            :aria-expanded="isExpanded(section.id)"
+            aria-label="Toggle details"
+            @click.stop="toggleSection(section.id)"
+          >
+            <UIcon
+              v-if="!isExpanded(section.id)"
+              :name="IconChevronDoubleDown"
+              class="h-4 w-4 transition-transform duration-500 text-zinc-500 dark:text-zinc-300"
+            />
+            <UIcon
+              v-else
+              :name="IconChevronDoubleUp"
+              class="h-4 w-4 transition-transform duration-500 text-zinc-500 dark:text-zinc-300"
+            />
+          </button>
         </UCard>
       </div>
     </UContainer>
@@ -123,6 +137,9 @@
 </template>
 
 <script setup lang="ts">
+import IconChevronDoubleUp from '~icons/heroicons/chevron-double-up-20-solid'
+import IconChevronDoubleDown from '~icons/heroicons/chevron-double-down-20-solid'
+
 type SkillSectionContent = {
   title: string
   blurb: string
@@ -196,7 +213,9 @@ const resolveLocaleValue = (value: unknown): any => {
 }
 
 const skillSections = computed(() => {
-  const localized = resolveLocaleValue(tm('skills.sections')) as Record<string, SkillSectionContent> | undefined
+  const localized = resolveLocaleValue(tm('skills.sections')) as
+    | Record<string, SkillSectionContent>
+    | undefined
 
   return skillSectionMeta.map((meta) => ({
     ...meta,
@@ -228,4 +247,23 @@ const skillDelays = {
   container: 0.0,
   cards: 0.12
 }
+
+const hoveredId = ref<string | null>(null)
+const manualExpandedId = ref<string | null>(null)
+
+const toggleSection = (id: string) => {
+  manualExpandedId.value = manualExpandedId.value === id ? null : id
+}
+
+const handleCardMouseEnter = (id: string) => {
+  hoveredId.value = id
+}
+
+const handleCardMouseLeave = (id: string) => {
+  if (hoveredId.value === id) {
+    hoveredId.value = null
+  }
+}
+
+const isExpanded = (id: string) => hoveredId.value === id || manualExpandedId.value === id
 </script>

@@ -35,6 +35,7 @@
               color="neutral"
               variant="outline"
               href="/resume.pdf"
+              external
               download
               class="justify-center group border transition-colors duration-300 bg-transparent"
             >
@@ -47,12 +48,7 @@
           </div>
         </div>
 
-        <div
-          class="space-y-4 relative z-20"
-          v-motion
-          :initial="motionInitial"
-          :visibleOnce="motionVisible(projectDelays.filters)"
-        >
+        <div class="space-y-4 relative z-20">
           <div class="flex flex-wrap items-center gap-2">
             <button
               v-for="category in categoryFilters"
@@ -161,7 +157,7 @@
                             ? 'border-cyber-purple/55 bg-cyber-purple/15 text-cyber-purple hover:border-cyber-purple/70 hover:bg-cyber-purple/25 dark:bg-cyber-purple/20 dark:hover:bg-cyber-purple/30'
                             : 'border-transparent bg-zinc-100/80 text-zinc-600 hover:border-cyber-purple/55 hover:bg-cyber-purple/15 hover:text-cyber-purple dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-cyber-purple/20'
                         ]"
-                        @click="activeTags = activeTags.includes(tag) ? activeTags.filter(t => t !== tag) : [...activeTags, tag]"
+                        @click="toggleTag(tag)"
                       >
                         <span class="capitalize">{{ tag }}</span>
                         <UIcon
@@ -219,7 +215,7 @@
       >
         <ProjectsCard
           v-for="p in filteredProjects"
-          :key="p.title"
+          :key="p.id"
           :project="p"
         />
       </div>
@@ -231,14 +227,14 @@
         :visibleOnce="motionVisible(projectDelays.grid)"
       >
         <div class="mx-auto max-w-md space-y-4 px-6">
-           <img
-              src="/sad-kitty.png"
-              width="250"
-              height="250"
-              alt="A sad kitty illustration"
-              class="mx-auto h-50 w-50 object-contain empty-state-kitty"
-              loading="lazy"
-            />
+          <img
+            src="/sad-kitty.png"
+            width="250"
+            height="250"
+            alt="A sad kitty illustration"
+            class="mx-auto h-50 w-50 object-contain empty-state-kitty"
+            loading="lazy"
+          />
           <p class="text-lg font-semibold text-zinc-900 dark:text-white">
             {{ t('projects.empty.title') }}
           </p>
@@ -416,7 +412,7 @@ const spring = {
 
 const motionInitial = {
   opacity: 0,
-  y: 22
+  y: 28
 } as const
 
 const motionVisible = (delay: number) => ({
@@ -424,7 +420,8 @@ const motionVisible = (delay: number) => ({
   y: 0,
   transition: {
     ...spring,
-    delay
+    delay,
+    duration: 0.45
   }
 })
 
@@ -462,6 +459,14 @@ const clearFilters = () => {
   activeCategory.value = 'all'
   clearTagFilters()
   closeTagMenu()
+}
+
+const toggleTag = (tag: string) => {
+  if (activeTags.value.includes(tag)) {
+    activeTags.value = activeTags.value.filter((t) => t !== tag)
+  } else {
+    activeTags.value = [...activeTags.value, tag]
+  }
 }
 </script>
 
