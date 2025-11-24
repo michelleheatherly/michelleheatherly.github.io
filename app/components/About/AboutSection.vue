@@ -2,7 +2,11 @@
   <section id="about" class="relative transition-colors duration-300">
     <UContainer class="relative py-24">
       <div class="space-y-12">
-        <div class="flex justify-start">
+        <div class="flex justify-start" 
+          v-motion
+          :initial="motionInitialText"
+          :visibleOnce="motionVisibleText(0.08)"
+        >
           <span
             class="inline-flex items-center gap-2 rounded-full border px-4 py-1
                    text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300"
