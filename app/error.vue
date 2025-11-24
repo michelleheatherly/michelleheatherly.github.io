@@ -16,7 +16,6 @@
             transition: { duration: 0.55, ease: 'easeOut' }
           }"
         >
-          <!-- Cat + Heading -->
           <div
             class="space-y-6"
             v-motion
@@ -33,7 +32,8 @@
                 width="250"
                 height="250"
                 :alt="t('error.imageAlt')"
-                class="mx-auto h-40 w-40 object-contain error-kitty"
+                class="mx-auto h-40 w-40 object-contain"
+                :class="kittyClasses"
                 loading="lazy"
               />
 
@@ -41,7 +41,7 @@
                 <span
                   class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-zinc-600/80 bg-white/80 dark:border-zinc-700/60 dark:bg-white/10 dark:text-zinc-300"
                 >
-                 <UIcon
+                  <UIcon
                     :name="IconExclamationTriangle"
                     class="h-4 w-4 text-amber-500 dark:text-amber-400"
                   />
@@ -63,7 +63,6 @@
               </div>
             </div>
 
-            <!-- Actions -->
             <div
               class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-center"
               v-motion
@@ -97,9 +96,9 @@
 
             <div class="mt-3 flex justify-center">
               <LanguageToggle />
+              <ThemeToggle />
             </div>
 
-            <!-- Technical details -->
             <div
               class="mt-6 border-t border-zinc-200/70 pt-4 text-left dark:border-zinc-700/60"
               v-motion
@@ -169,7 +168,7 @@ import IconArrowPath from '~icons/heroicons/arrow-path-20-solid'
 import IconHome from '~icons/heroicons/home-20-solid'
 import IconChevronUp from '~icons/heroicons/chevron-up-20-solid'
 import IconChevronDown from '~icons/heroicons/chevron-down-20-solid'
-
+import { usePreferredReducedMotion, useWindowSize, useMediaQuery } from '@vueuse/core'
 
 const props = defineProps<{
   error: NuxtError
@@ -200,13 +199,35 @@ const displayStack = computed(() => {
 })
 
 const handleRetry = () => {
-  // Re-run the failed route/component without redirecting
   clearError()
 }
 
 const handleGoHome = () => {
   clearError({ redirect: '/' })
 }
+
+const prefersReduced = usePreferredReducedMotion()
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const enableKittyMotion = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
+
+const kittyClasses = computed(() =>
+  enableKittyMotion.value ? 'error-kitty' : ''
+)
 </script>
 
 <style scoped>
@@ -223,15 +244,6 @@ const handleGoHome = () => {
   transition:
     transform 300ms ease,
     filter 300ms ease;
-}
-
-.error-kitty:hover {
-  animation-play-state: paused;
-  transform: translate3d(0, -5px, 0) rotate(2deg) scale(1.02);
-  filter:
-    drop-shadow(0 0 14px rgba(126, 78, 255, 0.35))
-    drop-shadow(0 0 22px rgba(16, 185, 129, 0.25))
-    drop-shadow(0 0 36px rgba(126, 78, 255, 0.24));
 }
 
 .error-kitty::after {
@@ -254,8 +266,19 @@ const handleGoHome = () => {
   transition: opacity 300ms ease;
 }
 
-.error-kitty:hover::after {
-  opacity: 0.75;
+@media (hover: hover) and (pointer: fine) {
+  .error-kitty:hover {
+    animation-play-state: paused;
+    transform: translate3d(0, -5px, 0) rotate(2deg) scale(1.02);
+    filter:
+      drop-shadow(0 0 14px rgba(126, 78, 255, 0.35))
+      drop-shadow(0 0 22px rgba(16, 185, 129, 0.25))
+      drop-shadow(0 0 36px rgba(126, 78, 255, 0.24));
+  }
+
+  .error-kitty:hover::after {
+    opacity: 0.75;
+  }
 }
 
 @keyframes error-kitty-bob {
@@ -276,7 +299,6 @@ const handleGoHome = () => {
   }
 }
 
-/* Technical details transition */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition:
@@ -295,6 +317,8 @@ const handleGoHome = () => {
 @media (prefers-reduced-motion: reduce) {
   .error-kitty {
     animation: none;
+    transform: none;
+    filter: none;
   }
 
   .fade-slide-enter-active,
