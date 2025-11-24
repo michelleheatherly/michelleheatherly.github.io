@@ -152,13 +152,6 @@ const imageHoverClasses = computed(() =>
     6px 10px 24px rgba(16, 185, 129, 0.2);
 }
 
-:global(.dark) .hero-section .hero-headline {
-  text-shadow:
-    1px 1px 0 rgba(196, 181, 253, 0.32),
-    2px 2px 0 rgba(124, 58, 237, 0.28),
-    8px 14px 28px rgba(34, 197, 94, 0.35);
-}
-
 .hero-section .hero-headline__accent {
   display: inline-block;
   background: linear-gradient(120deg, #c6a7ff, #8c5cf7 55%, #4ade80);
@@ -168,13 +161,6 @@ const imageHoverClasses = computed(() =>
   text-shadow:
     1px 1px 0 rgba(76, 29, 149, 0.28),
     3px 6px 18px rgba(74, 222, 128, 0.26);
-}
-
-:global(.dark) .hero-section .hero-headline__accent {
-  background: linear-gradient(120deg, #b892ff, #7c3aed 55%, #22c55e);
-  text-shadow:
-    1px 1px 0 rgba(76, 29, 149, 0.38),
-    4px 8px 22px rgba(34, 197, 94, 0.32);
 }
 
 .hero-section .availability-pill {
