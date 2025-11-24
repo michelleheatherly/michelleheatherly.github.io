@@ -12,31 +12,38 @@
       ]"
       @click="onClick"
     >
-      <UIcon
-        :name="isDark ? IconSun : IconMoon"
-        :class="[
-          'h-5 w-5',
-          'text-zinc-900 dark:text-zinc-100',
-          quickMode
-            ? 'transition-none duration-0'
-            : 'transition-transform duration-500 group-hover/theme-toggle:-translate-y-0.5 group-hover/theme-toggle:rotate-12'
-        ]"
-      />
+      <span class="relative inline-flex h-5 w-5 items-center justify-center">
+        <UIcon
+          :name="IconSun"
+          :class="[
+            iconBaseClasses,
+            isDark ? 'opacity-0 scale-75' : 'opacity-100 scale-100'
+          ]"
+        />
+        <UIcon
+          :name="IconMoon"
+          :class="[
+            iconBaseClasses,
+            isDark ? 'opacity-100 scale-100' : 'opacity-0 scale-75'
+          ]"
+        />
+      </span>
     </UButton>
 
     <template #fallback>
       <UButton
-        :aria-label="ariaLabel"
+        :aria-label="t('theme.switch', { mode: t('common.modes.dark') })"
         color="neutral"
         variant="ghost"
         size="sm"
         class="group/theme-toggle rounded-full border border-transparent bg-transparent hover:border-neutral-500/70 hover:bg-transparent hover:cursor-pointer transition-none duration-0 text-zinc-900 dark:text-zinc-100"
-        @click="switchTheme"
       >
-        <UIcon
-          :name="isDark ? IconSun : IconMoon"
-          class="h-5 w-5 text-zinc-900 dark:text-zinc-100 transition-none duration-0"
-        />
+        <span class="relative inline-flex h-5 w-5 items-center justify-center">
+          <UIcon
+            :name="IconMoon"
+            class="absolute h-5 w-5 text-zinc-900 dark:text-zinc-100"
+          />
+        </span>
       </UButton>
     </template>
   </ClientOnly>
@@ -45,19 +52,20 @@
 <script setup lang="ts">
 import IconSun from '~icons/lucide/sun'
 import IconMoon from '~icons/lucide/moon'
-import { useWindowSize, useMediaQuery } from '@vueuse/core'
+import { usePreferredReducedMotion, useMediaQuery } from '@vueuse/core'
 
 const colorMode = useColorMode()
 const { t } = useI18n()
 
 const isDark = computed(() => colorMode.value === 'dark')
 const nextTheme = computed(() => (isDark.value ? 'light' : 'dark'))
-const modeLabel = computed(() => t(`common.modes.${nextTheme.value}`))
-const ariaLabel = computed(() => t('theme.switch', { mode: modeLabel.value }))
 
 function switchTheme() {
   colorMode.preference = nextTheme.value
 }
+
+const reducedMotion = usePreferredReducedMotion()
+const isCoarsePointer = useMediaQuery('(hover: none) and (pointer: coarse)')
 
 const isSafari = computed(
   () =>
@@ -66,25 +74,35 @@ const isSafari = computed(
     !/chrome|crios|opr|edg/i.test(navigator.userAgent)
 )
 
-const prefersReduced = () =>
-  typeof window !== 'undefined' &&
-  window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
-
-const supportsViewTransition = () =>
-  typeof document !== 'undefined' && 'startViewTransition' in document
-
-const { width } = useWindowSize()
-const isTouch = useMediaQuery('(hover: none) and (pointer: coarse)')
-const isMobileViewport = computed(() => width.value < 1024)
-const isMobile = computed(() => isMobileViewport.value || isTouch.value)
-
-const quickMode = computed(
-  () =>
-    isMobile.value ||
-    prefersReduced() ||
-    isSafari.value ||
-    !supportsViewTransition()
+const supportsViewTransition = computed(
+  () => typeof document !== 'undefined' && 'startViewTransition' in document
 )
+
+const quickMode = computed(() => {
+  if (typeof window === 'undefined') return true
+
+  return (
+    reducedMotion.value === 'reduce' ||
+    isCoarsePointer.value ||
+    isSafari.value ||
+    !supportsViewTransition.value
+  )
+})
+
+const ariaLabel = computed(() =>
+  t('theme.switch', { mode: t(`common.modes.${nextTheme.value}`) })
+)
+
+const iconBaseClasses = computed(() => {
+  const base = 'absolute h-5 w-5 text-zinc-900 dark:text-zinc-100'
+  if (quickMode.value) {
+    return base + ' transition-opacity duration-200'
+  }
+  return (
+    base +
+    ' transition-all duration-300 group-hover/theme-toggle:-translate-y-0.5 group-hover/theme-toggle:rotate-12'
+  )
+})
 
 function onClick(e: MouseEvent) {
   if (quickMode.value) {
@@ -96,6 +114,11 @@ function onClick(e: MouseEvent) {
 }
 
 function startViewTransition(event: MouseEvent) {
+  if (typeof document === 'undefined' || !('startViewTransition' in document)) {
+    switchTheme()
+    return
+  }
+
   const x = event.clientX
   const y = event.clientY
   const endRadius = Math.hypot(
@@ -133,8 +156,12 @@ function startViewTransition(event: MouseEvent) {
   animation: none;
   mix-blend-mode: normal;
 }
-::view-transition-new(root) { z-index: 9999; }
-::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) {
+  z-index: 9999;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
 
 .transition-none,
 .transition-none * {

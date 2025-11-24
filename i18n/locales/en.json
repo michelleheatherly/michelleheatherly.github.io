@@ -17,7 +17,8 @@
     "switch": "Switch language to {language}"
   },
   "theme": {
-    "switch": "Switch to {mode} mode"
+    "switch": "Switch to {mode} mode",
+    "switchNeutral": "Toggle color theme"
   },
   "nav": {
     "brand": "Michelle Heatherly",

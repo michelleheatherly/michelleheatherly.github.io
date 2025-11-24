@@ -1,7 +1,7 @@
 <template>
   <form
     ref="formRef"
-    class="group/contact relative overflow-hidden rounded-2xl border border-black/10 bg-white/95 p-6 shadow-[0_45px_85px_-45px_rgba(14,20,48,0.55)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-zinc-900/70 md:p-8"
+    class="group/contact relative overflow-hidden rounded-2xl border border-black/10 bg-[#f4edff]/90 p-6 shadow-[0_45px_85px_-45px_rgba(14,20,48,0.55)] backdrop-blur-2xl transition-colors duration-300 dark:border-white/10 dark:bg-zinc-900/70 md:p-8"
     @submit.prevent="handleSubmit"
     @pointermove="updateSpotlight"
     @pointerleave="resetSpotlight"
@@ -272,7 +272,7 @@ const handleSubmit = async () => {
 }
 
 const fieldClasses =
-  'w-full rounded-xl border border-black/10 bg-white/90 px-4 py-3 text-base text-zinc-900 placeholder:text-zinc-400 backdrop-blur focus:outline-none focus:ring-2 focus:ring-cyber-purple/50 focus:border-transparent focus:shadow-[0_20px_45px_-28px_rgba(148,163,235,0.8)] transition-all duration-300 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/50'
+  'w-full rounded-xl border border-black/10 bg-[#f8f5ff]/80 px-4 py-3 text-base text-zinc-900 placeholder:text-zinc-400 backdrop-blur focus:outline-none focus:ring-2 focus:ring-cyber-purple/50 focus:border-transparent focus:shadow-[0_20px_45px_-28px_rgba(148,163,235,0.8)] transition-all duration-300 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/50'
 const textareaClasses = fieldClasses + ' min-h-[160px] resize-none align-top'
 </script>
 

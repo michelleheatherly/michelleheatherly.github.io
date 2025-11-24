@@ -67,7 +67,7 @@
           <UBadge
             v-for="t in project.tags"
             :key="t"
-            :color="$colorMode.value === 'dark' ? 'primary' : 'secondary'"
+            :color="badgeColor"
             variant="soft"
             class="text-xs border border-black/10 dark:border-white/10 transition-colors duration-300"
             :ui="{ rounded: 'rounded-full' }"
@@ -128,6 +128,7 @@ const props = defineProps<{
 
 const project = computed(() => props.project)
 const { t } = useI18n()
+const colorMode = useColorMode()
 
 const projectCodeHref = computed(() => {
   const source = project.value.codeLink?.trim()
@@ -236,6 +237,11 @@ const categoryMeta = computed(() => {
     dotClass: fallbackCategoryStyle.dotClass
   }
 })
+
+const isDark = computed(() => colorMode.value === 'dark')
+const badgeColor = computed(() =>
+  hasMounted.value && isDark.value ? 'primary' : 'secondary'
+)
 
 function handlePointerMove(event: PointerEvent) {
   const target = event.currentTarget as HTMLElement
