@@ -111,7 +111,8 @@
               width="512"
               height="768"
               alt="Starfleet kitty celebrating success"
-              class="contact-kitty h-75 w-75 object-contain"
+              class="h-75 w-75 object-contain"
+              :class="kittyClasses"
               loading="lazy"
             />
             <img
@@ -120,7 +121,8 @@
               width="512"
               height="768"
               alt="Starfleet kitty looking concerned"
-              class="contact-kitty h-75 w-75 object-contain"
+              class="h-75 w-75 object-contain"
+              :class="kittyClasses"
               loading="lazy"
             />
             <p
@@ -186,6 +188,10 @@ const enableHoverEffects = computed(
     isDesktop.value &&
     canHover.value &&
     prefersReduced.value !== 'reduce'
+)
+
+const kittyClasses = computed(() =>
+  enableHoverEffects.value ? 'contact-kitty' : ''
 )
 
 const spotlight = reactive({

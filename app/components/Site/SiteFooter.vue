@@ -73,7 +73,8 @@
             width="400"
             height="400"
             alt="Celestial kitty illustration"
-            class="h-40 w-auto object-contain sm:h-48 lg:h-56 self-start floaty-kitty"
+            class="h-40 w-auto object-contain sm:h-48 lg:h-56 self-start"
+            :class="kittyClasses"
             format="webp"
             loading="lazy"
             decoding="async"
@@ -246,6 +247,10 @@ const socialHoverClasses = computed(() =>
 
 const linkHoverGroupClass = computed(() =>
   enableHoverEffects.value ? 'group' : ''
+)
+
+const kittyClasses = computed(() =>
+  enableHoverEffects.value ? 'floaty-kitty' : ''
 )
 </script>
 

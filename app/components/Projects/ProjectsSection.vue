@@ -244,7 +244,8 @@
             width="250"
             height="250"
             alt="A sad kitty illustration"
-            class="mx-auto h-50 w-50 object-contain empty-state-kitty"
+            class="mx-auto h-50 w-50 object-contain"
+            :class="emptyKittyClasses"
             loading="lazy"
           />
           <p class="text-lg font-semibold text-zinc-900 dark:text-white">
@@ -502,6 +503,10 @@ const enableHoverEffects = computed(
     isDesktop.value &&
     canHover.value &&
     prefersReduced.value !== 'reduce'
+)
+
+const emptyKittyClasses = computed(() =>
+  enableHoverEffects.value ? 'empty-state-kitty' : ''
 )
 </script>
 
