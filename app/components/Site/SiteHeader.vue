@@ -106,12 +106,6 @@
             </div>
           </div>
 
-          <div
-            class="menu-ripple"
-            :class="{ 'menu-ripple--active': allowMenuRipple }"
-            :style="rippleStyle"
-          />
-
           <div class="relative z-10 flex h-full flex-col items-center justify-center gap-10 px-8 text-center">
             <nav :id="menuId">
               <ul class="space-y-6">
@@ -204,10 +198,7 @@ const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
 const footerVisible = useState<boolean>('footer-visible', () => false)
 const isMenuOpen = ref(false)
 const iconOpenState = ref(false)
-const rippleOrigin = ref({ x: 0, y: 0 })
 const menuId = 'site-navigation'
-
-let openTimeout: number | undefined
 
 const navLinks = computed(() =>
   navLinkDefs.map((link) => ({
@@ -262,15 +253,6 @@ const shouldHideHeader = computed(
   () => footerVisible.value && !isMenuOpen.value
 )
 
-const allowMenuRipple = computed(
-  () => prefersReduced.value !== 'reduce'
-)
-
-const rippleStyle = computed(() => ({
-  '--ripple-x': `${rippleOrigin.value.x}px`,
-  '--ripple-y': `${rippleOrigin.value.y}px`
-}))
-
 const hasMounted = ref(false)
 onMounted(() => {
   hasMounted.value = true
@@ -298,48 +280,19 @@ const menuSocialHoverClasses = computed(() =>
     : ''
 )
 
-function openMenu(event?: MouseEvent) {
+function openMenu() {
   iconOpenState.value = true
-
-  if (import.meta.client) {
-    if (event) {
-      rippleOrigin.value = { x: event.clientX, y: event.clientY }
-    } else {
-      rippleOrigin.value = {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2
-      }
-    }
-
-    if (openTimeout) {
-      clearTimeout(openTimeout)
-    }
-
-    openTimeout = window.setTimeout(
-      () => {
-        isMenuOpen.value = true
-      },
-      prefersReduced.value === 'reduce' ? 0 : 160
-    )
-  } else {
-    isMenuOpen.value = true
-  }
+  isMenuOpen.value = true
 }
 
 function closeMenu() {
   iconOpenState.value = false
-
-  if (import.meta.client && openTimeout) {
-    clearTimeout(openTimeout)
-    openTimeout = undefined
-  }
-
   isMenuOpen.value = false
 }
 
-function toggleMenu(event?: MouseEvent) {
+function toggleMenu() {
   if (!isMenuOpen.value) {
-    openMenu(event)
+    openMenu()
   } else {
     closeMenu()
   }
@@ -380,9 +333,6 @@ if (import.meta.client) {
 onBeforeUnmount(() => {
   if (import.meta.client) {
     document.body.classList.remove('overflow-hidden')
-    if (openTimeout) {
-      clearTimeout(openTimeout)
-    }
   }
 
   removeEscapeListener?.()
@@ -497,39 +447,6 @@ onBeforeUnmount(() => {
 
   .menu-toggle--hoverable:hover {
     transform: none;
-  }
-}
-
-.menu-ripple {
-  position: fixed;
-  width: 120vmax;
-  height: 120vmax;
-  left: var(--ripple-x);
-  top: var(--ripple-y);
-  border-radius: 9999px;
-  transform: translate(-50%, -50%) scale(0.05);
-  background: radial-gradient(
-    circle at center,
-    rgba(155, 92, 255, 0.72) 0%,
-    rgba(43, 245, 160, 0.28) 45%,
-    rgba(12, 10, 16, 0) 70%
-  );
-  opacity: 0;
-  pointer-events: none;
-}
-
-.menu-ripple--active {
-  animation: menu-ripple-open 0.6s cubic-bezier(.76, .32, .29, .99) forwards;
-}
-
-@keyframes menu-ripple-open {
-  0% {
-    transform: translate(-50%, -50%) scale(0.05);
-    opacity: 0.75;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0;
   }
 }
 </style>

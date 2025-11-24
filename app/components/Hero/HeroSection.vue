@@ -10,14 +10,14 @@
         >
           <span
             :class="[
-              'availability-pill cursor-pointer inline-flex items-center rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300',
+              'availability-pill inline-flex items-center rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300',
               { group: enableHover }
             ]"
             :aria-label="t('hero.availability')"
           >
             <UIcon
               name="i-heroicons-rocket-launch-20-solid"
-              class="h-4 w-4 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-12"
+              class="h-4 w-4"
             />
             <span class="availability-pill__text" aria-hidden="true">
               {{ t('hero.availability') }}
