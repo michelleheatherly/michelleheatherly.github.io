@@ -70,10 +70,12 @@
       <UCard
         v-for="post in items"
         :key="post.link"
-        class="group relative flex h-full transform-gpu flex-col justify-between overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-6 lg:p-7 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-cyber-purple/30 hover:shadow-[0_28px_60px_-40px_rgba(124,58,237,0.55)] dark:border-white/10 dark:bg-white/[0.06] dark:hover:border-cyber-purple/40"
+        class="group relative flex h-full transform-gpu flex-col justify-between overflow-hidden rounded-2xl border border-black/10 bg-white/70 p-6 lg:p-7 backdrop-blur-xl transition-all duration-300 dark:border-white/10 dark:bg-white/[0.06]"
+        :class="cardHoverClasses"
       >
         <span
-          class="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyber-purple/0 via-cyber-purple/10 to-cyber-green/0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          class="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyber-purple/0 via-cyber-purple/10 to-cyber-green/0 opacity-0 transition-opacity duration-500"
+          :class="overlayHoverClasses"
         />
         <div class="relative flex h-full flex-col gap-4">
           <div class="space-y-2">
@@ -118,6 +120,8 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize, useMediaQuery } from '@vueuse/core'
+
 const props = defineProps<{ maxHeight?: number | null }>()
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -147,10 +151,31 @@ const localeItems = computed<FeedCardItem[]>(() => {
   })
 })
 
-
 const items = computed(() => localeItems.value.slice(0, 3))
 
 const skeletonItems = computed(() => [0, 1, 2])
+
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const enableHover = computed(
+  () => hasMounted.value && width.value >= 1024 && canHover.value
+)
+
+const cardHoverClasses = computed(() =>
+  enableHover.value
+    ? 'hover:-translate-y-1.5 hover:border-cyber-purple/30 hover:shadow-[0_28px_60px_-40px_rgba(124,58,237,0.55)] dark:hover:border-cyber-purple/40'
+    : ''
+)
+
+const overlayHoverClasses = computed(() =>
+  enableHover.value ? 'group-hover:opacity-100' : ''
+)
 
 const dateFormatter = computed(() => {
   try {

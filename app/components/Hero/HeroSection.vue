@@ -9,8 +9,10 @@
           :enter="motionEnter(0.12)"
         >
           <span
-            class="availability-pill group cursor-pointer inline-flex items-center rounded-full border px-4 py-1
-                   text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300"
+            :class="[
+              'availability-pill cursor-pointer inline-flex items-center rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-[0.28em] transition-colors duration-300',
+              { group: enableHover }
+            ]"
             :aria-label="t('hero.availability')"
           >
             <UIcon
@@ -40,19 +42,27 @@
           </p>
 
           <div class="flex flex-wrap gap-3">
-            <UButton size="lg" to="#projects" class="group">
+            <UButton
+              size="lg"
+              to="#projects"
+              :class="{ group: enableHover }"
+            >
               <UIcon
                 name="i-heroicons-bolt-20-solid"
                 class="h-5 w-5 transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-12"
               />
               <span>{{ t('hero.cta.projects') }}</span>
             </UButton>
+
             <UButton
               size="lg"
               color="neutral"
               variant="soft"
               to="#contact"
-              class="group border transition-colors duration-300 bg-transparent"
+              :class="[
+                'border transition-colors duration-300 bg-transparent',
+                { group: enableHover }
+              ]"
             >
               <UIcon
                 name="i-heroicons-envelope-20-solid"
@@ -68,7 +78,8 @@
         </div>
 
         <div
-          class="group rounded-3xl overflow-hidden"
+          class="rounded-3xl overflow-hidden"
+          :class="{ group: enableHover }"
           v-motion
           :initial="motionInitial"
           :enter="motionEnter(0.22)"
@@ -78,7 +89,8 @@
             width="870"
             height="580"
             :alt="t('hero.portraitAlt')"
-            class="block w-full aspect-[1.5] object-cover transition-transform duration-700 group-hover:scale-105"
+            class="block w-full aspect-[1.5] object-cover transition-transform duration-700"
+            :class="imageHoverClasses"
             format="webp"
             loading="eager"
             fetchpriority="high"
@@ -91,6 +103,7 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize, useMediaQuery } from '@vueuse/core'
 const { t } = useI18n()
 
 const spring = {
@@ -112,6 +125,22 @@ const motionEnter = (delay: number) => ({
     delay
   }
 })
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const enableHover = computed(
+  () => hasMounted.value && width.value >= 1024 && canHover.value
+)
+
+const imageHoverClasses = computed(() =>
+  enableHover.value ? 'group-hover:scale-105' : ''
+)
 </script>
 
 <style scoped>

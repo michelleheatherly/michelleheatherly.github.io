@@ -27,7 +27,8 @@
             :rel="link.target ? 'noreferrer' : undefined"
             variant="soft"
             color="neutral"
-            class="group rounded-lg border transition-colors duration-300 bg-transparent"
+            class="rounded-lg border transition-colors duration-300 bg-transparent"
+            :class="enableHoverButtons ? 'group' : ''"
           >
             <UIcon
               :name="link.icon"
@@ -41,7 +42,8 @@
           to="#projects"
           variant="soft"
           color="neutral"
-          class="group rounded-lg border transition-colors duration-300 bg-transparent"
+          class="rounded-lg border transition-colors duration-300 bg-transparent"
+          :class="enableHoverButtons ? 'group' : ''"
         >
           <UIcon
             name="i-heroicons-bolt-20-solid"
@@ -55,6 +57,8 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize, useMediaQuery } from '@vueuse/core'
+
 const props = defineProps<{
   badge?: string
   headline: string
@@ -95,4 +99,16 @@ const contactActions = computed(() => {
       }
     })
 })
+
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const enableHoverButtons = computed(
+  () => hasMounted.value && width.value >= 1024 && canHover.value
+)
 </script>

@@ -12,6 +12,7 @@
     <input type="hidden" name="subject" :value="t('contact.form.emailSubject')" />
 
     <div
+      v-if="enableHoverEffects"
       class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500"
       :class="{ 'opacity-100': spotlight.active }"
       :style="spotlightStyle"
@@ -163,11 +164,29 @@
 </template>
 
 <script setup lang="ts">
-import { usePreferredReducedMotion } from '@vueuse/core'
+import { usePreferredReducedMotion, useWindowSize, useMediaQuery } from '@vueuse/core'
 
 const formRef = ref<HTMLFormElement | null>(null)
 const apiKey = useRuntimeConfig().public.contactApiKey
+
 const prefersReduced = usePreferredReducedMotion()
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const enableHoverEffects = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
 
 const spotlight = reactive({
   x: 50,
@@ -182,8 +201,7 @@ const status = ref<'idle' | 'success' | 'error'>('idle')
 const errorMessage = ref('')
 
 const spotlightStyle = computed(() => {
-  if (!spotlight.active || prefersReduced.value === 'reduce') {
-    // Keep it centered but subtle when inactive or reduced motion
+  if (!spotlight.active || prefersReduced.value === 'reduce' || !enableHoverEffects.value) {
     return {
       background:
         'radial-gradient(circle at 50% 50%, rgba(165,180,252,0.16), transparent 60%)'
@@ -196,7 +214,7 @@ const spotlightStyle = computed(() => {
 })
 
 const updateSpotlight = (event: PointerEvent) => {
-  if (!formRef.value || prefersReduced.value === 'reduce') return
+  if (!formRef.value || prefersReduced.value === 'reduce' || !enableHoverEffects.value) return
 
   const rect = formRef.value.getBoundingClientRect()
   const x = ((event.clientX - rect.left) / rect.width) * 100
@@ -208,6 +226,7 @@ const updateSpotlight = (event: PointerEvent) => {
 }
 
 const resetSpotlight = () => {
+  if (!enableHoverEffects.value) return
   spotlight.active = false
 }
 
@@ -265,15 +284,6 @@ const textareaClasses = fieldClasses + ' min-h-[160px] resize-none align-top'
   transition: transform 300ms ease, filter 300ms ease;
 }
 
-.contact-kitty:hover {
-  animation-play-state: paused;
-  transform: translate3d(0, -5px, 0) rotate(3deg) scale(1.02);
-  filter:
-    drop-shadow(0 0 14px rgba(155, 92, 255, 0.32))
-    drop-shadow(0 0 24px rgba(23, 157, 104, 0.22))
-    drop-shadow(0 0 40px rgba(155, 92, 255, 0.2));
-}
-
 .contact-kitty::after {
   content: "";
   position: absolute;
@@ -292,8 +302,19 @@ const textareaClasses = fieldClasses + ' min-h-[160px] resize-none align-top'
   transition: opacity 300ms ease;
 }
 
-.contact-kitty:hover::after {
-  opacity: 0.75;
+@media (hover: hover) and (pointer: fine) {
+  .contact-kitty:hover {
+    animation-play-state: paused;
+    transform: translate3d(0, -5px, 0) rotate(3deg) scale(1.02);
+    filter:
+      drop-shadow(0 0 14px rgba(155, 92, 255, 0.32))
+      drop-shadow(0 0 24px rgba(23, 157, 104, 0.22))
+      drop-shadow(0 0 40px rgba(155, 92, 255, 0.2));
+  }
+
+  .contact-kitty:hover::after {
+    opacity: 0.75;
+  }
 }
 
 @keyframes contact-kitty-bob {

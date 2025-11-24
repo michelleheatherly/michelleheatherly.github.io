@@ -8,7 +8,6 @@
     :style="headerSurfaceStyles"
   >
     <UContainer class="flex items-center justify-between py-3">
-      <!-- Brand -->
       <NuxtLink
         to="/"
         class="flex items-center gap-3 focus-visible:outline-none"
@@ -21,7 +20,6 @@
         </span>
       </NuxtLink>
 
-      <!-- Desktop nav -->
       <nav class="hidden lg:block">
         <ul class="flex gap-6 items-center">
           <li
@@ -30,10 +28,11 @@
           >
             <ULink
               :to="l.to"
-              class="group relative text-sm transition-colors duration-300
+              class="relative text-sm transition-colors duration-300
                      text-zinc-700 hover:text-zinc-900
                      dark:text-white/80 dark:hover:text-white
                      focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40 rounded-md px-1"
+              :class="enableHoverNav ? 'group' : ''"
             >
               {{ l.label }}
               <span
@@ -45,20 +44,22 @@
         </ul>
       </nav>
 
-      <!-- Actions -->
       <div class="flex items-center gap-2">
         <LanguageToggle />
         <ThemeToggle />
         <button
           type="button"
-          class="menu-toggle menu-toggle--hoverable inline-flex cursor-pointer items-center justify-center lg:hidden transition duration-300
+          class="menu-toggle inline-flex cursor-pointer items-center justify-center lg:hidden transition duration-300
                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
                  text-zinc-800 dark:text-zinc-100 hover:text-zinc-950 dark:hover:text-white"
-          :class="{
-            'menu-toggle--bg-open': isMenuOpen,
-            'menu-toggle--icon-open': iconOpenState,
-            'menu-toggle--closed': !isMenuOpen
-          }"
+          :class="[
+            {
+              'menu-toggle--bg-open': isMenuOpen,
+              'menu-toggle--icon-open': iconOpenState,
+              'menu-toggle--closed': !isMenuOpen
+            },
+            enableHoverNav ? 'menu-toggle--hoverable' : ''
+          ]"
           :aria-expanded="isMenuOpen"
           :aria-controls="menuId"
           :aria-label="menuButtonLabel"
@@ -85,13 +86,16 @@
             <div class="mx-auto flex w-full max-w-7xl justify-end px-6 pt-3">
               <button
                 type="button"
-                class="menu-toggle menu-toggle--hoverable inline-flex cursor-pointer items-center justify-center pointer-events-auto transition duration-300
+                class="menu-toggle inline-flex cursor-pointer items-center justify-center pointer-events-auto transition duration-300
                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent
                        text-zinc-800 dark:text-zinc-100 hover:text-zinc-950 dark:hover:text-white"
-                :class="{
-                  'menu-toggle--icon-open': iconOpenState,
-                  'menu-toggle--closed': !isMenuOpen
-                }"
+                :class="[
+                  {
+                    'menu-toggle--icon-open': iconOpenState,
+                    'menu-toggle--closed': !isMenuOpen
+                  },
+                  enableHoverNav ? 'menu-toggle--hoverable' : ''
+                ]"
                 :aria-label="t('nav.menu.close')"
                 @click.stop="closeMenu"
               >
@@ -117,9 +121,8 @@
                 >
                   <ULink
                     :to="l.to"
-                    class="group menu-link relative inline-block transform-gpu text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white/90 transition-all duration-300 ease-out
-                           hover:text-zinc-900 dark:hover:text-white hover:drop-shadow-[0_0_25px_rgba(43,245,160,0.45)]
-                           focus-visible:text-zinc-900 dark:focus-visible:text-white focus-visible:drop-shadow-[0_0_25px_rgba(43,245,160,0.45)] focus-visible:ring-2 focus-visible:ring-cyber-purple/50 focus-visible:outline-none"
+                    class="menu-link relative inline-block transform-gpu text-3xl font-semibold tracking-tight text-zinc-900 dark:text-white/90 transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-cyber-purple/50 focus-visible:outline-none"
+                    :class="menuLinkHoverClasses"
                     @click="handleMobileNavigate"
                   >
                     <span
@@ -142,7 +145,8 @@
                   v-for="link in socialLinks"
                   :key="link.label"
                   :aria-label="t('footer.social.visit', { label: link.label })"
-                  class="group relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-black/10 text-zinc-500 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-cyber-purple/60 hover:bg-cyber-purple/10 hover:text-cyber-purple/90 dark:border-white/10 dark:bg-white/5 dark:text-white/70 dark:hover:border-cyber-purple/60 dark:hover:bg-cyber-purple/15 dark:hover:text-cyber-purple"
+                  class="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-black/10 text-zinc-500 transition-all duration-300 dark:border-white/10 dark:bg-white/5 dark:text-white/70"
+                  :class="menuSocialHoverClasses"
                   :href="link.href"
                   target="_blank"
                   rel="noreferrer"
@@ -174,7 +178,8 @@ import {
   useWindowScroll,
   usePreferredReducedMotion,
   useWindowSize,
-  useEventListener
+  useEventListener,
+  useMediaQuery
 } from '@vueuse/core'
 
 const { t } = useI18n()
@@ -194,10 +199,11 @@ const socialLinks = useSocialLinks()
 const prefersReduced = usePreferredReducedMotion()
 const { y } = useWindowScroll()
 const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
 
 const footerVisible = useState<boolean>('footer-visible', () => false)
-const isMenuOpen = ref(false)       // overlay visibility
-const iconOpenState = ref(false)    // burger ↔ X animation
+const isMenuOpen = ref(false)
+const iconOpenState = ref(false)
 const rippleOrigin = ref({ x: 0, y: 0 })
 const menuId = 'site-navigation'
 
@@ -265,6 +271,33 @@ const rippleStyle = computed(() => ({
   '--ripple-y': `${rippleOrigin.value.y}px`
 }))
 
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const enableHoverNav = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
+
+const menuLinkHoverClasses = computed(() =>
+  enableHoverNav.value
+    ? 'group hover:text-zinc-900 dark:hover:text-white hover:drop-shadow-[0_0_25px_rgba(43,245,160,0.45)] focus-visible:text-zinc-900 dark:focus-visible:text-white focus-visible:drop-shadow-[0_0_25px_rgba(43,245,160,0.45)]'
+    : ''
+)
+
+const menuSocialHoverClasses = computed(() =>
+  enableHoverNav.value
+    ? 'group hover:-translate-y-1 hover:scale-105 hover:border-cyber-purple/60 hover:bg-cyber-purple/10 hover:text-cyber-purple/90 dark:hover:border-cyber-purple/60 dark:hover:bg-cyber-purple/15 dark:hover:text-cyber-purple'
+    : ''
+)
+
 function openMenu(event?: MouseEvent) {
   iconOpenState.value = true
 
@@ -320,7 +353,6 @@ function handleBrandClick() {
   closeMenu()
 }
 
-// Body scroll lock + breakpoint handling
 if (import.meta.client) {
   watch(isMenuOpen, (open) => {
     document.body.classList.toggle('overflow-hidden', open)
@@ -378,7 +410,6 @@ onBeforeUnmount(() => {
   --header-border-opacity: var(--header-border-opacity-dark);
 }
 
-/* Overlay transition */
 .menu-overlay-enter-active,
 .menu-overlay-leave-active {
   transition: opacity 0.32s ease;
@@ -394,7 +425,6 @@ onBeforeUnmount(() => {
   transition: background 0.35s ease;
 }
 
-/* Menu toggle button */
 .menu-toggle {
   position: relative;
   z-index: 90;
@@ -419,7 +449,6 @@ onBeforeUnmount(() => {
   transform: translateY(-2px) rotate(6deg);
 }
 
-/* Burger lines */
 .menu-toggle__line {
   position: absolute;
   width: 22px;
@@ -444,7 +473,6 @@ onBeforeUnmount(() => {
   top: 28px;
 }
 
-/* Burger → X */
 .menu-toggle--icon-open .menu-toggle__line:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
 }
@@ -472,7 +500,6 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Ripple */
 .menu-ripple {
   position: fixed;
   width: 120vmax;

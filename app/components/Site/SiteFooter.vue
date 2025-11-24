@@ -48,7 +48,8 @@
               v-for="link in socialLinks"
               :key="link.label"
               :aria-label="t('footer.social.visit', { label: link.label })"
-              class="group relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-black/10 bg-white/50 text-zinc-500 transition-all duration-300 hover:-translate-y-1 hover:scale-105 hover:border-cyber-purple/60 hover:bg-cyber-purple/10 hover:text-cyber-purple/90 dark:border-white/10 dark:bg-white/5 dark:text-white/60 dark:hover:border-cyber-purple/60 dark:hover:bg-cyber-purple/15 dark:hover:text-cyber-purple"
+              class="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border border-black/10 bg-white/50 text-zinc-500 transition-all duration-300 dark:border-white/10 dark:bg-white/5 dark:text-white/60"
+              :class="socialHoverClasses"
               :href="link.href"
               target="_blank"
               rel="noreferrer"
@@ -67,7 +68,7 @@
         <section
           class="relative z-10 grid gap-6 items-start lg:grid-cols-[auto_minmax(0,1fr)] lg:gap-8 lg:pl-4 xl:pl-8"
         >
-          <NuxtImg 
+          <NuxtImg
             src="/celestial-kitty.png"
             width="400"
             height="400"
@@ -103,7 +104,8 @@
                       <li v-for="item in column.links" :key="item.label">
                         <NuxtLink
                           :href="item.href"
-                          class="group relative inline-flex items-center gap-2 rounded-full py-1 text-zinc-600 transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40 dark:text-white/60"
+                          class="relative inline-flex items-center gap-2 rounded-full py-1 text-zinc-600 transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40 dark:text-white/60"
+                          :class="linkHoverGroupClass"
                         >
                           <span
                             class="pointer-events-none absolute -bottom-1 left-0 h-0.5 w-full origin-left scale-x-0 rounded-full bg-black opacity-0 transition-all duration-300 ease-out dark:bg-white/90
@@ -157,7 +159,7 @@
 </template>
 
 <script setup lang="ts">
-import { useIntersectionObserver } from '@vueuse/core'
+import { useIntersectionObserver, usePreferredReducedMotion, useWindowSize, useMediaQuery } from '@vueuse/core'
 
 const { t } = useI18n()
 
@@ -216,6 +218,35 @@ if (import.meta.client) {
     }
   )
 }
+
+const prefersReduced = usePreferredReducedMotion()
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const enableHoverEffects = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
+
+const socialHoverClasses = computed(() =>
+  enableHoverEffects.value
+    ? 'group hover:-translate-y-1 hover:scale-105 hover:border-cyber-purple/60 hover:bg-cyber-purple/10 hover:text-cyber-purple/90 dark:hover:border-cyber-purple/60 dark:hover:bg-cyber-purple/15 dark:hover:text-cyber-purple'
+    : ''
+)
+
+const linkHoverGroupClass = computed(() =>
+  enableHoverEffects.value ? 'group' : ''
+)
 </script>
 
 <style scoped>
@@ -253,15 +284,6 @@ if (import.meta.client) {
     filter 300ms ease;
 }
 
-.floaty-kitty:hover {
-  animation-play-state: paused;
-  transform: translate3d(0, -6px, 0) rotate(4deg) scale(1.03);
-  filter:
-    drop-shadow(0 0 14px rgba(155, 92, 255, 0.32))
-    drop-shadow(0 0 24px rgba(23, 157, 104, 0.22))
-    drop-shadow(0 0 40px rgba(155, 92, 255, 0.20));
-}
-
 .floaty-kitty::after {
   content: "";
   position: absolute;
@@ -282,8 +304,19 @@ if (import.meta.client) {
   transition: opacity 300ms ease;
 }
 
-.floaty-kitty:hover::after {
-  opacity: 0.75;
+@media (hover: hover) and (pointer: fine) {
+  .floaty-kitty:hover {
+    animation-play-state: paused;
+    transform: translate3d(0, -6px, 0) rotate(4deg) scale(1.03);
+    filter:
+      drop-shadow(0 0 14px rgba(155, 92, 255, 0.32))
+      drop-shadow(0 0 24px rgba(23, 157, 104, 0.22))
+      drop-shadow(0 0 40px rgba(155, 92, 255, 0.20));
+  }
+
+  .floaty-kitty:hover::after {
+    opacity: 0.75;
+  }
 }
 
 @keyframes floaty-kitty-bob {

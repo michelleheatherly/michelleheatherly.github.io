@@ -6,8 +6,8 @@
           ref="leftColRef"
           class="space-y-6"
           v-motion
-          :initial="isClient ? motionInitialLeft : motionStaticLeft"
-          :visibleOnce="isClient ? motionVisibleLeft(blogDelays.container) : false"
+          :initial="motionInitialLeft"
+          :visibleOnce="motionVisibleLeft(blogDelays.container)"
         >
           <span
             class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs uppercase tracking-[0.28em] shadow-sm transition-colors duration-300"
@@ -46,7 +46,8 @@
               target="_blank"
               rel="noopener noreferrer"
               size="md"
-              class="group border transition-colors duration-300 bg-transparent"
+              class="border transition-colors duration-300 bg-transparent"
+              :class="enableHoverButtons ? 'group' : ''"
               variant="soft"
               color="neutral"
             >
@@ -63,7 +64,8 @@
               target="_blank"
               rel="noopener noreferrer"
               size="md"
-              class="group border transition-colors duration-300 bg-transparent"
+              class="border transition-colors duration-300 bg-transparent"
+              :class="enableHoverButtons ? 'group' : ''"
               variant="soft"
               color="neutral"
             >
@@ -80,8 +82,8 @@
           class="relative min-h-0 overflow-hidden pt-2"
           :style="feedHeight ? { height: feedHeight + 'px' } : undefined"
           v-motion
-          :initial="isClient ? motionInitialRight : motionStaticRight"
-          :visibleOnce="isClient ? motionVisibleRight(blogDelays.feed) : false"
+          :initial="motionInitialRight"
+          :visibleOnce="motionVisibleRight(blogDelays.feed)"
         >
           <BlogFeedCards :max-height="feedHeight ?? undefined" />
         </div>
@@ -91,13 +93,11 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useWindowSize, useMediaQuery } from '@vueuse/core'
+
 const { t, locale } = useI18n({ useScope: 'global' })
 const config = useRuntimeConfig()
-
-const isClient = ref(false)
-onMounted(() => {
-  isClient.value = true
-})
 
 const leftColRef = ref<HTMLElement | null>(null)
 const noteRef = ref<HTMLElement | null>(null)
@@ -108,6 +108,7 @@ function calcHeights() {
     feedHeight.value = null
     return
   }
+
   const left = leftColRef.value
   const note = noteRef.value
   if (!left || !note) return
@@ -118,7 +119,13 @@ function calcHeights() {
   feedHeight.value = Math.max(0, height)
 }
 
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+const hasMounted = ref(false)
+
 onMounted(() => {
+  hasMounted.value = true
+
   calcHeights()
   window.addEventListener('resize', calcHeights, { passive: true })
 })
@@ -126,6 +133,10 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', calcHeights)
 })
+
+const enableHoverButtons = computed(
+  () => hasMounted.value && width.value >= 1024 && canHover.value
+)
 
 const feedUrlState = useState('feedUrl', () => (config.public.feedUrl ?? '').trim())
 const blogBaseState = useState('blogUrl', () => (config.public.blogUrl ?? '').trim())
@@ -151,11 +162,6 @@ const motionInitialLeft = {
   y: 32
 } as const
 
-const motionStaticLeft = {
-  opacity: 1,
-  y: 0
-} as const
-
 const motionVisibleLeft = (delay: number) => ({
   opacity: 1,
   y: 0,
@@ -169,12 +175,6 @@ const motionInitialRight = {
   opacity: 0,
   x: 32,
   scale: 0.95
-} as const
-
-const motionStaticRight = {
-  opacity: 1,
-  x: 0,
-  scale: 1
 } as const
 
 const motionVisibleRight = (delay: number) => ({
