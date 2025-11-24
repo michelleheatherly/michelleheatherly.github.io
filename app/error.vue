@@ -2,11 +2,11 @@
   <UApp>
     <section
       id="error-page"
-      class="relative min-h-screen flex items-center justify-center transition-colors duration-300"
+      class="relative min-h-screen flex items-center justify-center transition-colors duration-300 bg-gradient-to-b from-[#fefcff] via-[#f6f1ff] to-[#e7d9ff] dark:from-[#03000b] dark:via-[#14022f] dark:to-[#05010f]"
     >
       <UContainer class="py-16">
         <div
-          class="mx-auto max-w-2xl rounded-[2.5rem] border border-dashed border-zinc-300/70 bg-[#f3e8ff]/80 px-6 py-10 text-center shadow-sm backdrop-blur-md dark:border-zinc-700/60 dark:bg-white/5"
+          class="mx-auto max-w-2xl rounded-[2.5rem] border border-dashed border-zinc-300/70 bg-gradient-to-br from-[#fefbff] via-[#f2e6ff] to-[#d9c5ff] px-6 py-10 text-center shadow-sm backdrop-blur-md dark:border-zinc-700/60 dark:from-[#090114] dark:via-[#1a0456] dark:to-[#090117]"
           v-motion
           :initial="{ opacity: 0, y: 32, scale: 0.96 }"
           :enter="{
@@ -39,7 +39,7 @@
 
               <div class="space-y-3">
                 <span
-                  class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-zinc-600/80 bg-white/80 dark:border-zinc-700/60 dark:bg-white/10 dark:text-zinc-300"
+                  class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-[0.65rem] uppercase tracking-[0.28em] text-zinc-600/80 bg-white/20 dark:border-zinc-700/60 dark:bg-white/10 dark:text-zinc-300"
                 >
                   <UIcon
                     :name="IconExclamationTriangle"
