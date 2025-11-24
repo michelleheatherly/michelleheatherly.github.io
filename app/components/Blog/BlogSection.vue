@@ -6,8 +6,8 @@
           ref="leftColRef"
           class="space-y-6"
           v-motion
-          :initial="motionInitialLeft"
-          :visibleOnce="motionVisibleLeft(blogDelays.container)"
+          :initial="motionInitial"
+          :visibleOnce="motionVisible(blogDelays.container)"
         >
           <span
             class="inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs uppercase tracking-[0.28em] shadow-sm transition-colors duration-300"
@@ -82,8 +82,8 @@
           class="relative min-h-0 overflow-hidden pt-2"
           :style="feedHeight ? { height: feedHeight + 'px' } : undefined"
           v-motion
-          :initial="motionInitialRight"
-          :visibleOnce="motionVisibleRight(blogDelays.feed)"
+          :initial="motionInitialFeed"
+          :visibleOnce="motionVisibleFeed(blogDelays.feed)"
         >
           <BlogFeedCards :max-height="feedHeight ?? undefined" />
         </div>
@@ -93,7 +93,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useWindowSize, useMediaQuery } from '@vueuse/core'
 
 const { t, locale } = useI18n({ useScope: 'global' })
@@ -153,16 +152,16 @@ const showBlogLink = computed(() => !!blogUrl.value)
 
 const spring = {
   type: 'spring',
-  stiffness: 110,
-  damping: 24
+  stiffness: 140,
+  damping: 22
 } as const
 
-const motionInitialLeft = {
+const motionInitial = {
   opacity: 0,
-  y: 32
+  y: 18
 } as const
 
-const motionVisibleLeft = (delay: number) => ({
+const motionVisible = (delay: number) => ({
   opacity: 1,
   y: 0,
   transition: {
@@ -171,14 +170,16 @@ const motionVisibleLeft = (delay: number) => ({
   }
 })
 
-const motionInitialRight = {
+const motionInitialFeed = {
   opacity: 0,
-  x: 32,
-  scale: 0.95
+  y: 20,
+  x: 12,
+  scale: 0.97
 } as const
 
-const motionVisibleRight = (delay: number) => ({
+const motionVisibleFeed = (delay: number) => ({
   opacity: 1,
+  y: 0,
   x: 0,
   scale: 1,
   transition: {
@@ -188,7 +189,7 @@ const motionVisibleRight = (delay: number) => ({
 })
 
 const blogDelays = {
-  container: 0.08,
-  feed: 0.28
+  container: 0.06,
+  feed: 0.2
 }
 </script>
