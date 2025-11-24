@@ -54,11 +54,14 @@
               v-for="category in categoryFilters"
               :key="category.value"
               type="button"
-              class="inline-flex cursor-pointer items-center rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/50 hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-20px_rgba(99,102,241,0.6)]"
+              class="inline-flex cursor-pointer items-center rounded-full border px-4 py-1.5 text-sm font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/50"
               :class="[
                 activeCategory === category.value
                   ? 'border-cyber-purple/60 bg-cyber-purple/15 text-cyber-purple dark:bg-cyber-purple/20'
-                  : 'border-zinc-300/60 bg-white/70 text-zinc-600 hover:border-cyber-purple/40 hover:text-cyber-purple dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-300'
+                  : 'border-zinc-300/60 bg-white/70 text-zinc-600 hover:border-cyber-purple/40 hover:text-cyber-purple dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-300',
+                enableHoverEffects
+                  ? 'hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-20px_rgba(99,102,241,0.6)]'
+                  : ''
               ]"
               @click="activeCategory = category.value"
             >
@@ -79,10 +82,12 @@
                   class="group inline-flex cursor-pointer items-center gap-3 rounded-full border px-4 py-1.5 text-sm font-medium
                         transition-all duration-300
                         border-zinc-300/60 bg-white/70 text-zinc-600
-                        hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-20px_rgba(99,102,241,0.6)]
                         hover:border-cyber-purple/40 hover:text-cyber-purple
                         focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/50
                         dark:border-zinc-700/60 dark:bg-white/5 dark:text-zinc-300 dark:hover:text-cyber-purple"
+                  :class="enableHoverEffects
+                    ? 'hover:-translate-y-0.5 hover:shadow-[0_14px_35px_-20px_rgba(99,102,241,0.6)]'
+                    : ''"
                 >
                   <UIcon
                     :name="IconTag"
@@ -116,14 +121,16 @@
                         <button
                           v-if="activeTags.length"
                           type="button"
-                          class="text-xs font-semibold uppercase tracking-[0.18em] text-cyber-green transition-all duration-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-green/40 cursor-pointer"
+                          class="text-xs font-semibold uppercase tracking-[0.18em] text-cyber-green transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-green/40 cursor-pointer"
+                          :class="enableHoverEffects ? 'hover:-translate-y-0.5' : ''"
                           @click="activeTags = []"
                         >
                           {{ t('projects.filters.tags.clear') }}
                         </button>
                         <button
                           type="button"
-                          class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400 transition-all duration-300 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40 cursor-pointer"
+                          class="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40 cursor-pointer"
+                          :class="enableHoverEffects ? 'hover:-translate-y-0.5' : ''"
                           @click="tagMenuOpen = false; tagSearchQuery = ''"
                         >
                           {{ t('projects.filters.tags.done') }}
@@ -151,11 +158,12 @@
                         v-for="tag in filteredTagOptions"
                         :key="tag"
                         type="button"
-                        class="flex w-full cursor-pointer items-center justify-between rounded-2xl border px-4 py-2 text-sm transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40 hover:-translate-y-0.5"
+                        class="flex w-full cursor-pointer items-center justify-between rounded-2xl border px-4 py-2 text-sm transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40"
                         :class="[
                           activeTags.includes(tag)
                             ? 'border-cyber-purple/55 bg-cyber-purple/15 text-cyber-purple hover:border-cyber-purple/70 hover:bg-cyber-purple/25 dark:bg-cyber-purple/20 dark:hover:bg-cyber-purple/30'
-                            : 'border-transparent bg-zinc-100/80 text-zinc-600 hover:border-cyber-purple/55 hover:bg-cyber-purple/15 hover:text-cyber-purple dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-cyber-purple/20'
+                            : 'border-transparent bg-zinc-100/80 text-zinc-600 hover:border-cyber-purple/55 hover:bg-cyber-purple/15 hover:text-cyber-purple dark:bg-white/5 dark:text-zinc-300 dark:hover:bg-cyber-purple/20',
+                          enableHoverEffects ? 'hover:-translate-y-0.5' : ''
                         ]"
                         @click="toggleTag(tag)"
                       >
@@ -178,7 +186,10 @@
               <button
                 v-if="hasActiveFilters"
                 type="button"
-                class="ml-auto inline-flex items-center gap-2 rounded-full border border-transparent px-3.5 py-1.5 text-sm font-bold text-cyber-green transition-all duration-300 hover:-translate-y-0.5 hover:text-cyber-green hover:shadow-[0_16px_40px_-28px_rgba(59,130,246,0.35)] focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-green/40 cursor-pointer"
+                class="ml-auto inline-flex items-center gap-2 rounded-full border border-transparent px-3.5 py-1.5 text-sm font-bold text-cyber-green transition-all duration-300 hover:text-cyber-green focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-green/40 cursor-pointer"
+                :class="enableHoverEffects
+                  ? 'hover:-translate-y-0.5 hover:shadow-[0_16px_40px_-28px_rgba(59,130,246,0.35)]'
+                  : ''"
                 @click="clearFilters"
               >
                 <UIcon
@@ -219,6 +230,7 @@
           :project="p"
         />
       </div>
+
       <div
         v-else
         class="rounded-[2.5rem] border border-dashed border-zinc-300/70 bg-white/60 py-16 text-center transition-colors duration-300 dark:border-zinc-700/60 dark:bg-white/5"
@@ -252,6 +264,7 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize, usePreferredReducedMotion, useMediaQuery } from '@vueuse/core'
 import IconBeaker from '~icons/heroicons/beaker-20-solid'
 import IconArrowDownTray from '~icons/heroicons/arrow-down-tray-20-solid'
 import IconTag from '~icons/heroicons/tag-20-solid'
@@ -401,7 +414,10 @@ const filteredTagOptions = computed(() => {
 })
 
 const hasActiveFilters = computed(
-  () => activeCategory.value !== 'all' || activeTags.value.length > 0 || searchQuery.value.trim().length > 0
+  () =>
+    activeCategory.value !== 'all' ||
+    activeTags.value.length > 0 ||
+    searchQuery.value.trim().length > 0
 )
 
 const spring = {
@@ -468,6 +484,25 @@ const toggleTag = (tag: string) => {
     activeTags.value = [...activeTags.value, tag]
   }
 }
+
+const { width } = useWindowSize()
+const prefersReduced = usePreferredReducedMotion()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const enableHoverEffects = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
 </script>
 
 <style scoped>
@@ -485,15 +520,6 @@ const toggleTag = (tag: string) => {
   transition:
     transform 300ms ease,
     filter 300ms ease;
-}
-
-.empty-state-kitty:hover {
-  animation-play-state: paused;
-  transform: translate3d(0, -5px, 0) rotate(2deg) scale(1.02);
-  filter:
-    drop-shadow(0 0 14px rgba(126, 78, 255, 0.35))
-    drop-shadow(0 0 22px rgba(16, 185, 129, 0.25))
-    drop-shadow(0 0 36px rgba(126, 78, 255, 0.24));
 }
 
 .empty-state-kitty::after {
@@ -516,8 +542,19 @@ const toggleTag = (tag: string) => {
   transition: opacity 300ms ease;
 }
 
-.empty-state-kitty:hover::after {
-  opacity: 0.75;
+@media (hover: hover) and (pointer: fine) {
+  .empty-state-kitty:hover {
+    animation-play-state: paused;
+    transform: translate3d(0, -5px, 0) rotate(2deg) scale(1.02);
+    filter:
+      drop-shadow(0 0 14px rgba(126, 78, 255, 0.35))
+      drop-shadow(0 0 22px rgba(16, 185, 129, 0.25))
+      drop-shadow(0 0 36px rgba(126, 78, 255, 0.24));
+  }
+
+  .empty-state-kitty:hover::after {
+    opacity: 0.75;
+  }
 }
 
 @keyframes empty-kitty-bob {

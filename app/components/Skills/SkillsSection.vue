@@ -37,8 +37,8 @@
           :key="section.id"
           class="group relative h-full overflow-hidden rounded-3xl border border-zinc-200/60 dark:border-zinc-800/80
                  bg-white/60 dark:bg-zinc-900/60 backdrop-blur transition-all duration-400
-                 hover:-translate-y-1 hover:shadow-[0_22px_55px_-28px_rgba(165,180,252,0.55)] hover:border-cyber-purple/40
                  cursor-pointer"
+          :class="cardHoverClasses"
           @mouseenter="handleCardMouseEnter(section.id)"
           @mouseleave="handleCardMouseLeave(section.id)"
           @click="toggleSection(section.id)"
@@ -62,12 +62,13 @@
                 <div class="relative">
                   <span
                     class="relative grid h-12 w-12 place-items-center rounded-2xl border border-zinc-200/70 dark:border-zinc-700/70
-                           bg-white/70 dark:bg-zinc-900/70 transition-all duration-500
-                           group-hover:border-transparent group-hover:bg-white dark:group-hover:bg-zinc-900 group-hover:shadow-[0_16px_40px_-30px_rgba(165,180,252,0.95)]"
+                           bg-white/70 dark:bg-zinc-900/70 transition-all duration-500"
+                    :class="iconHoverClasses"
                   >
                     <UIcon
                       :name="section.icon"
-                      class="h-6 w-6 text-cyber-purple transition-transform duration-500 group-hover:-translate-y-0.5 group-hover:rotate-12"
+                      class="h-6 w-6 text-cyber-purple transition-transform duration-500"
+                      :class="iconTransformClasses"
                     />
                   </span>
                   <span
@@ -90,8 +91,8 @@
                   v-for="highlight in section.highlights"
                   :key="highlight"
                   class="text-xs font-medium tracking-wide uppercase px-3 py-1.5 rounded-full border border-zinc-200/80 dark:border-zinc-800/80
-                         text-zinc-600 dark:text-zinc-200 bg-white/70 dark:bg-zinc-900/70 transition-colors duration-300
-                         group-hover:border-cyber-purple/50"
+                         text-zinc-600 dark:text-zinc-200 bg-white/70 dark:bg-zinc-900/70 transition-colors duration-300"
+                  :class="highlightHoverClasses"
                 >
                   {{ highlight }}
                 </span>
@@ -111,9 +112,9 @@
           </div>
 
           <button
-          class="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full
-                border border-zinc-200/80 bg-white/80 text-zinc-500 dark:border-zinc-700/80 dark:bg-zinc-900/80
-                opacity-80 transition duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40"
+            class="absolute bottom-4 right-4 flex h-10 w-10 items-center justify-center rounded-full
+                   border border-zinc-200/80 bg-white/80 text-zinc-500 dark:border-zinc-700/80 dark:bg-zinc-900/80
+                   opacity-80 transition duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/40"
             :class="isExpanded(section.id) ? 'opacity-0 -translate-y-1 scale-95' : ''"
             :aria-expanded="isExpanded(section.id)"
             aria-label="Toggle details"
@@ -137,6 +138,7 @@
 </template>
 
 <script setup lang="ts">
+import { useWindowSize, useMediaQuery } from '@vueuse/core'
 import IconChevronDoubleUp from '~icons/heroicons/chevron-double-up-20-solid'
 import IconChevronDoubleDown from '~icons/heroicons/chevron-double-down-20-solid'
 
@@ -205,7 +207,10 @@ const resolveLocaleValue = (value: unknown): any => {
     }
 
     return Object.fromEntries(
-      Object.entries(value as Record<string, unknown>).map(([key, val]) => [key, resolveLocaleValue(val)])
+      Object.entries(value as Record<string, unknown>).map(([key, val]) => [
+        key,
+        resolveLocaleValue(val)
+      ])
     )
   }
 
@@ -219,7 +224,12 @@ const skillSections = computed(() => {
 
   return skillSectionMeta.map((meta) => ({
     ...meta,
-    ...(localized?.[meta.id] ?? { title: '', blurb: '', highlights: [], peek: '' })
+    ...(localized?.[meta.id] ?? {
+      title: '',
+      blurb: '',
+      highlights: [],
+      peek: ''
+    })
   }))
 })
 
@@ -248,6 +258,38 @@ const skillDelays = {
   cards: 0.12
 }
 
+const { width } = useWindowSize()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const enableCardHover = computed(
+  () => hasMounted.value && width.value >= 1024 && canHover.value
+)
+
+const cardHoverClasses = computed(() =>
+  enableCardHover.value
+    ? 'hover:-translate-y-1 hover:shadow-[0_22px_55px_-28px_rgba(165,180,252,0.55)] hover:border-cyber-purple/40'
+    : ''
+)
+
+const iconHoverClasses = computed(() =>
+  enableCardHover.value
+    ? 'group-hover:border-transparent group-hover:bg-white dark:group-hover:bg-zinc-900 group-hover:shadow-[0_16px_40px_-30px_rgba(165,180,252,0.95)]'
+    : ''
+)
+
+const iconTransformClasses = computed(() =>
+  enableCardHover.value ? 'group-hover:-translate-y-0.5 group-hover:rotate-12' : ''
+)
+
+const highlightHoverClasses = computed(() =>
+  enableCardHover.value ? 'group-hover:border-cyber-purple/50' : ''
+)
+
 const hoveredId = ref<string | null>(null)
 const manualExpandedId = ref<string | null>(null)
 const blockedHoverId = ref<string | null>(null)
@@ -265,6 +307,7 @@ const toggleSection = (id: string) => {
 }
 
 const handleCardMouseEnter = (id: string) => {
+  if (!enableCardHover.value) return
   hoveredId.value = id
 }
 

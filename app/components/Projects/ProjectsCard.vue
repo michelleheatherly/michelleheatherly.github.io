@@ -1,112 +1,118 @@
 <template>
   <UCard
-    class="group relative h-full overflow-hidden rounded-2xl transition-all duration-300
-           border border-black/10 dark:border-white/10
-           bg-white/70 dark:bg-white/5 backdrop-blur-xl
-           hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(129,140,248,0.65)]
-           hover:border-cyber-purple/30
-           focus-within:ring-2 focus-within:ring-cyber-purple/40"
+    class="group relative h-full overflow-hidden rounded-2xl
+          border border-black/10 dark:border-white/10
+          bg-white/70 dark:bg-white/5 backdrop-blur-xl
+          transition-all duration-300"
+    :class="hoverClasses"
     :ui="{ body: 'relative flex h-full flex-col p-0' }"
-    @pointermove="handlePointerMove"
-    @pointerleave="resetSpotlight"
+    @pointermove="handlePointerMoveWrapper"
+    @pointerleave="resetSpotlightWrapper"
   >
     <span
-      class="pointer-events-none absolute inset-px rounded-2xl
-             opacity-0 transition-opacity duration-500 group-hover:opacity-80"
+      v-if="enableHoverEffects"
+      class="pointer-events-none absolute inset-px rounded-2xl z-0
+            opacity-0 transition-opacity duration-500 group-hover:opacity-80"
       :style="{ background: spotlightBackground }"
     />
 
     <span
-      class="pointer-events-none absolute inset-0 bg-gradient-to-br from-cyber-purple/0 via-cyber-purple/10 to-cyber-green/0
-             opacity-0 transition-opacity duration-500 group-hover:opacity-100 mix-blend-soft-light"
+      v-if="enableHoverEffects"
+      class="pointer-events-none absolute inset-0 z-0
+            bg-gradient-to-br from-cyber-purple/0 via-cyber-purple/10 to-cyber-green/0
+            opacity-0 transition-opacity duration-500 group-hover:opacity-100"
     />
-
-    <div class="relative">
-      <a
-        :href="project.link"
-        target="_blank"
-        rel="noreferrer"
-        class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/50"
-      >
-        <NuxtImg
-          :src="projectImageSrc"
-          :alt="project.title"
-          width="1030"
-          height="560"
-          class="h-44 w-full object-cover rounded-t-2xl transition-all duration-500 ease-out group-hover:scale-105"
-          format="webp"
-          loading="lazy"
-          decoding="async"
-        />
-      </a>
-
-      <span
-        class="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md transition-all duration-300 shadow-sm"
-        :class="categoryMeta.badgeClass"
-      >
-        <span class="h-1.5 w-1.5 rounded-full" :class="categoryMeta.dotClass" />
-        {{ categoryMeta.label }}
-      </span>
-    </div>
-
-    <div class="flex flex-1 flex-col p-4 space-y-3">
-      <h3 class="text-lg font-semibold text-zinc-900 dark:text-white transition-colors duration-300">
-        {{ project.title }}
-      </h3>
-
-      <p class="text-sm leading-relaxed text-zinc-600 dark:text-white/70 transition-colors duration-300">
-        {{ project.description }}
-      </p>
-
-      <div class="flex flex-wrap gap-2">
-        <UBadge
-          v-for="t in project.tags"
-          :key="t"
-          :color="$colorMode.value === 'dark' ? 'primary' : 'secondary'"
-          variant="soft"
-          class="text-xs border border-black/10 dark:border-white/10 transition-colors duration-300"
-          :ui="{ rounded: 'rounded-full' }"
+    <div class="relative z-10 flex h-full flex-col">
+      <div class="relative">
+        <a
+          :href="project.link"
+          target="_blank"
+          rel="noreferrer"
+          class="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-purple/50"
         >
-          {{ t }}
-        </UBadge>
+          <NuxtImg
+            :src="projectImageSrc"
+            :alt="project.title"
+            width="1030"
+            height="560"
+            :class="[
+              'h-44 w-full object-cover rounded-t-2xl transition-all duration-500 ease-out',
+              enableHoverEffects ? 'group-hover:scale-105' : ''
+            ]"
+            format="webp"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+
+        <span
+          class="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md transition-all duration-300 shadow-sm"
+          :class="categoryMeta.badgeClass"
+        >
+          <span class="h-1.5 w-1.5 rounded-full" :class="categoryMeta.dotClass" />
+          {{ categoryMeta.label }}
+        </span>
       </div>
 
-      <div class="pt-2 mt-auto flex items-center justify-between gap-2">
-        <UButton
-          color="success"
-          :to="project.link"
-          target="_blank"
-          rel="noreferrer"
-          class="group/button transition-colors duration-300"
-        >
-          <UIcon
-            name="i-heroicons-arrow-top-right-on-square-20-solid"
-            class="h-5 w-5 transition-transform duration-500 group-hover/button:-translate-y-0.5 group-hover/button:rotate-12"
-          />
-          <span>{{ t('projects.card.view') }}</span>
-        </UButton>
+      <div class="flex flex-1 flex-col p-4 space-y-3">
+        <h3 class="text-lg font-semibold text-zinc-900 dark:text-white transition-colors duration-300">
+          {{ project.title }}
+        </h3>
 
-        <UButton
-          v-if="projectCodeHref"
-          color="secondary"
-          :to="projectCodeHref"
-          target="_blank"
-          rel="noreferrer"
-          class="group/code flex items-center gap-2 transition-colors duration-300"
-        >
-          <UIcon
-            name="i-heroicons-code-bracket-20-solid"
-            class="h-5 w-5 transition-transform duration-500 group-hover/code:-translate-y-0.5 group-hover/code:rotate-12"
-          />
-          <span>{{ t('projects.card.code') }}</span>
-        </UButton>
+        <p class="text-sm leading-relaxed text-zinc-600 dark:text-white/70 transition-colors duration-300">
+          {{ project.description }}
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          <UBadge
+            v-for="t in project.tags"
+            :key="t"
+            :color="$colorMode.value === 'dark' ? 'primary' : 'secondary'"
+            variant="soft"
+            class="text-xs border border-black/10 dark:border-white/10 transition-colors duration-300"
+            :ui="{ rounded: 'rounded-full' }"
+          >
+            {{ t }}
+          </UBadge>
+        </div>
+
+        <div class="pt-2 mt-auto flex items-center justify-between gap-2">
+          <UButton
+            color="success"
+            :to="project.link"
+            target="_blank"
+            rel="noreferrer"
+            class="group/button transition-colors duration-300"
+          >
+            <UIcon
+              name="i-heroicons-arrow-top-right-on-square-20-solid"
+              class="h-5 w-5 transition-transform duration-500 group-hover/button:-translate-y-0.5 group-hover/button:rotate-12"
+            />
+            <span>{{ t('projects.card.view') }}</span>
+          </UButton>
+
+          <UButton
+            v-if="projectCodeHref"
+            color="secondary"
+            :to="projectCodeHref"
+            target="_blank"
+            rel="noreferrer"
+            class="group/code flex items-center gap-2 transition-colors duration-300"
+          >
+            <UIcon
+              name="i-heroicons-code-bracket-20-solid"
+              class="h-5 w-5 transition-transform duration-500 group-hover/code:-translate-y-0.5 group-hover/code:rotate-12"
+            />
+            <span>{{ t('projects.card.code') }}</span>
+          </UButton>
+        </div>
       </div>
     </div>
   </UCard>
 </template>
 
 <script setup lang="ts">
-import { usePreferredReducedMotion } from '@vueuse/core'
+import { usePreferredReducedMotion, useWindowSize, useMediaQuery } from '@vueuse/core'
 
 const props = defineProps<{
   project: {
@@ -139,12 +145,36 @@ const projectImageSrc = computed(() => {
   return raw.startsWith('/') ? raw : `/${raw}`
 })
 
+const { width } = useWindowSize()
 const prefersReduced = usePreferredReducedMotion()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const enableHoverEffects = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
+
+const hoverClasses = computed(() =>
+  enableHoverEffects.value
+    ? 'hover:-translate-y-1 hover:shadow-[0_24px_55px_-30px_rgba(129,140,248,0.65)] hover:border-cyber-purple/30'
+    : ''
+)
+
 const pointerX = ref(50)
 const pointerY = ref(110)
 
 const spotlightBackground = computed(() => {
-  if (prefersReduced.value === 'reduce') {
+  if (!enableHoverEffects.value) {
     return 'radial-gradient(160px circle at 50% 120%, rgba(139, 92, 246, 0.12), transparent 66%)'
   }
 
@@ -208,8 +238,6 @@ const categoryMeta = computed(() => {
 })
 
 function handlePointerMove(event: PointerEvent) {
-  if (prefersReduced.value === 'reduce') return
-
   const target = event.currentTarget as HTMLElement
   const rect = target.getBoundingClientRect()
   const x = ((event.clientX - rect.left) / rect.width) * 100
@@ -221,5 +249,15 @@ function handlePointerMove(event: PointerEvent) {
 function resetSpotlight() {
   pointerX.value = 50
   pointerY.value = 110
+}
+
+function handlePointerMoveWrapper(event: PointerEvent) {
+  if (!enableHoverEffects.value) return
+  handlePointerMove(event)
+}
+
+function resetSpotlightWrapper() {
+  if (!enableHoverEffects.value) return
+  resetSpotlight()
 }
 </script>

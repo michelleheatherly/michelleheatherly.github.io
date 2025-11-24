@@ -46,7 +46,10 @@
           <UCard
             v-for="category in educationCategories"
             :key="category.id"
-            class="group education-card relative h-full overflow-hidden rounded-[2rem] border border-black/10 bg-white/80 backdrop-blur-xl transition-all duration-400 hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgba(99,102,241,0.55)] dark:border-white/10 dark:bg-white/10"
+            class="group education-card relative h-full overflow-hidden rounded-[2rem]
+                   border border-black/10 bg-white/80 backdrop-blur-xl
+                   transition-all duration-400 dark:border-white/10 dark:bg-white/10"
+            :class="cardHoverClasses"
           >
             <div
               class="pointer-events-none absolute -top-24 right-0 h-48 w-48 rounded-full blur-3xl"
@@ -109,6 +112,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref, onMounted } from 'vue'
+import { useWindowSize, usePreferredReducedMotion, useMediaQuery } from '@vueuse/core'
+
 type EducationEntry = {
   title: string
   org: string
@@ -203,6 +209,31 @@ const educationDelays = {
   container: 0.0,
   cards: 0.14
 }
+
+const { width } = useWindowSize()
+const prefersReduced = usePreferredReducedMotion()
+const canHover = useMediaQuery('(hover: hover) and (pointer: fine)')
+
+const hasMounted = ref(false)
+onMounted(() => {
+  hasMounted.value = true
+})
+
+const isDesktop = computed(() => width.value >= 1024)
+
+const enableHoverEffects = computed(
+  () =>
+    hasMounted.value &&
+    isDesktop.value &&
+    canHover.value &&
+    prefersReduced.value !== 'reduce'
+)
+
+const cardHoverClasses = computed(() =>
+  enableHoverEffects.value
+    ? 'hover:-translate-y-1 hover:shadow-[0_30px_60px_-40px_rgba(99,102,241,0.55)]'
+    : ''
+)
 </script>
 
 <style scoped>
@@ -294,9 +325,11 @@ const educationDelays = {
   box-shadow: 0 0 0 6px rgba(23, 157, 104, 0.12);
 }
 
-.timeline-item:hover .timeline-bullet {
-  transform: translate(-50%, -50%) scale(1.08);
-  box-shadow: 0 0 0 8px rgba(23, 157, 104, 0.22);
+@media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+  .timeline-item:hover .timeline-bullet {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 0 0 8px rgba(23, 157, 104, 0.22);
+  }
 }
 
 .timeline-content p {
