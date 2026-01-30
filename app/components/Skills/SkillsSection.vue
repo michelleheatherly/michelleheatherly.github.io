@@ -44,11 +44,11 @@
           @click="toggleSection(section.id)"
         >
           <div
-            class="pointer-events-none absolute inset-0 bg-gradient-to-br opacity-0 transition-opacity duration-500"
+            class="pointer-events-none absolute inset-0 rounded-3xl bg-gradient-to-br opacity-0 transition-opacity duration-500"
             :class="[section.accentGradient, { 'opacity-100': isExpanded(section.id) }]"
           />
           <div
-            class="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 mix-blend-overlay"
+            class="pointer-events-none absolute inset-0 rounded-3xl opacity-0 transition-opacity duration-500 mix-blend-overlay"
             :class="[section.motif, { 'opacity-70': isExpanded(section.id) }]"
           />
           <div
