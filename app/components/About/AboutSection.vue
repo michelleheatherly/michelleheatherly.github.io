@@ -147,7 +147,7 @@
             >
               <div class="relative overflow-hidden rounded-[2.75rem]">
                 <NuxtImg
-                  src="/WerkIt-©LaurenRoberts2024-53.jpg"
+                  src="/walling-e_MdMMKrgdY-unsplash.jpg"
                   width="569"
                   height="850"
                   :alt="t('about.portraitAlt')"
