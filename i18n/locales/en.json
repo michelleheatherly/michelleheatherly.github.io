@@ -91,7 +91,7 @@
   "about": {
     "badge": "About",
     "heading": "Designing with empathy, building with purpose.",
-    "description": "I'm a Full-Stack Software Engineer with 9+ years of experience and a background in Computer Science. My passion is building accessible, performant digital products that feel effortless to use and feel meaningful to the people that use them.",
+    "description": "I'm a Full-Stack Software Engineer with 10+ years of experience and a background in Computer Science. My passion is building accessible, performant digital products that feel effortless to use and feel meaningful to the people that use them.",
     "cards": {
       "superpower": {
         "title": "Superpower",
@@ -117,7 +117,7 @@
       "Accessibility",
       "Cloud Computing"
     ],
-    "portraitAlt": "Portrait"
+    "portraitAlt": "Office"
   },
   "education": {
     "badge": "Education",
