@@ -30,7 +30,7 @@
             </div>
           </div>
 
-          <div>
+          <div v-if="showResumeBtn">
             <UButton
               color="neutral"
               variant="outline"
@@ -276,6 +276,8 @@ import IconMinusCircle from '~icons/heroicons/minus-circle-20-solid'
 import IconPlusCircle from '~icons/heroicons/plus-circle-20-solid'
 import IconArrowPath from '~icons/heroicons/arrow-path-20-solid'
 import IconSparkles from '~icons/heroicons/sparkles-20-solid'
+
+const showResumeBtn = ref(false);
 
 const categoryFilterMeta = [
   { key: 'all', value: 'all' },
