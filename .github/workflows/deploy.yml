@@ -46,7 +46,7 @@ jobs:
 
       - name: Build static site with Nuxt GitHub Pages preset
         env:
-          NUXT_APP_BASE_URL: /portfolio-website-2025/
+          NUXT_APP_BASE_URL: /
         run: |
           npx nuxt build --preset github_pages
 
