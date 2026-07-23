@@ -320,15 +320,6 @@
         "tags": ["Nuxt", "Vue", "Tailwind", "IndexedDB"],
         "link": "https://quizzi-worker.michelleheatherly218.workers.dev",
         "category": "full-stack"
-      },
-      {
-        "id": "kinsaleCharters",
-        "title": "Kinsale Charters",
-        "description": "Die Website von Kinsale Charters – einem kleinen Angelcharter-Service in Virginia.",
-        "image": "/kinsale-charters.png",
-        "tags": ["JS", "CSS", "HTML", "Webpack", "Gitlab"],
-        "link": "https://kinsale-charters.com",
-        "category": "front-end"
       }
     ]
   },
